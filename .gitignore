@@ -1,0 +1,9 @@
+# Root workspace (concurrently, etc.)
+node_modules/
+
+# Secrets — never commit (use .env.example as a template)
+.env
+.env.*
+!.env.example
+
+.DS_Store
