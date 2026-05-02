@@ -49,6 +49,10 @@ export const getAllClasses = async (req: Request, res: Response) => {
     if (search) {
       query.name = { $regex: search, $options: "i" };
     }
+    const user = (req as any).user;
+    if (user?.role === "teacher") {
+      query.classTeacher = user._id;
+    }
 
     // 3. Execute Query (Count & Find)
     const [total, classes] = await Promise.all([

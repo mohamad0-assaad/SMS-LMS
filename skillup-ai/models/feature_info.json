@@ -1,0 +1,53 @@
+{
+  "basic_features": [
+    "exam_score",
+    "quiz_score",
+    "assignment_score",
+    "attendance_rate",
+    "quiz_attempts",
+    "study_time_hours",
+    "login_frequency",
+    "course_progress"
+  ],
+  "topic_features": [
+    "topic_variables",
+    "topic_loops",
+    "topic_functions",
+    "topic_oop",
+    "topic_recursion",
+    "topic_datastructures"
+  ],
+  "all_features": [
+    "exam_score",
+    "quiz_score",
+    "assignment_score",
+    "attendance_rate",
+    "quiz_attempts",
+    "study_time_hours",
+    "login_frequency",
+    "course_progress",
+    "topic_variables",
+    "topic_loops",
+    "topic_functions",
+    "topic_oop",
+    "topic_recursion",
+    "topic_datastructures"
+  ],
+  "topics": [
+    "Variables",
+    "Loops",
+    "Functions",
+    "OOP",
+    "Recursion",
+    "Data_Structures"
+  ],
+  "strategies": [
+    "Review Lessons",
+    "Extra Practice",
+    "Practice Exercises",
+    "Advanced Challenges",
+    "Change Study Method",
+    "Increase Study Time",
+    "Interactive Exercises"
+  ]
+}

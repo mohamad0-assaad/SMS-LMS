@@ -7,7 +7,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
-import { json } from "node:stream/consumers";
+import dns from "node:dns";
 import { connectDB } from "./config/db";
 import userRoutes from "./routes/user";
 import LogsRouter from "./routes/activitieslog";
@@ -20,11 +20,10 @@ import {generateExam, generateTimeTable } from "./inngest/functions"
 import timeRouter from "./routes/timetable";
 import examRouter from "./routes/exam";
 import dashboardRouter from "./routes/dashboard";
-// import mongoose from "mongoose";
-const dns=require("dns")
-dns.setServers([
-  '1.1.1.1','8.8.8.8'
-])
+import aiRouter from "./routes/ai";
+import skillupRouter from "./routes/skillup";
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 dotenv.config();
 
@@ -66,7 +65,9 @@ app.use("/api/classes",classRouter);
 app.use("/api/subjects",subjectRouter);
 app.use("/api/timetables", timeRouter);
 app.use("/api/exams",examRouter);
-app.use("/api/dashboard",dashboardRouter)
+app.use("/api/dashboard",dashboardRouter);
+app.use("/api/ai", aiRouter);
+app.use("/api/skillup", skillupRouter);
 app.use("/api/inngest",serve({ client: inngest, functions:[generateTimeTable,generateExam],}));
 
 // global error handler middleware

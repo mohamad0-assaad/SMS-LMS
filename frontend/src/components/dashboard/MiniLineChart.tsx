@@ -73,7 +73,7 @@ export function MiniLineChart({
             textAnchor="middle"
             fontSize={11}
             fontWeight={600}
-            fill="#475569"
+            fill="#94a3b8"
           >
             {row[xKey]}
           </text>

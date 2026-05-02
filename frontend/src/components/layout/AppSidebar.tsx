@@ -33,14 +33,14 @@ function NavRow({ item, onNavigate }: { item: NavLeaf; onNavigate?: () => void }
       onClick={onNavigate}
       className={({ isActive }) =>
         [
-          'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
+          'flex items-center gap-3 py-2.5 text-sm font-medium transition',
           isActive
-            ? 'bg-white/10 text-white shadow-sm'
-            : 'text-slate-300 hover:bg-white/5 hover:text-white',
+            ? 'rounded-r-xl border-l-2 border-teal-400 bg-teal-500/[0.08] pl-[10px] pr-3 text-white'
+            : 'rounded-xl px-3 text-slate-400 hover:bg-white/[0.04] hover:text-white',
         ].join(' ')
       }
     >
-      <item.icon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} />
+      <item.icon className="h-4 w-4 shrink-0" strokeWidth={2} />
       {item.label}
     </NavLink>
   )
@@ -74,6 +74,7 @@ export function AppSidebar({ role, userName, onLogout }: AppSidebarProps) {
     { label: 'Exams', icon: ClipboardList, to: `${base}/exams` },
     { label: 'Results', icon: BarChart3, to: `${base}/results` },
     { label: 'Resources', icon: BookOpen, to: `${base}/resources` },
+    { label: 'AI Insights', icon: Sparkles, to: `${base}/ai-insights` },
   ]
 
   const parentNav: NavLeaf[] = [
@@ -114,12 +115,14 @@ export function AppSidebar({ role, userName, onLogout }: AppSidebarProps) {
           <GraduationCap className="h-5 w-5 text-white" strokeWidth={2} />
         </div>
         <div>
-          <p className="text-sm font-bold tracking-tight text-white">SkillUp</p>
-          <p className="text-xs font-medium text-slate-400">LMS</p>
+          <p className="text-sm font-bold tracking-tight text-white">SkillUp LMS</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+            {role === 'teacher' ? 'Teacher Dashboard' : role === 'student' ? 'Student Portal' : role === 'admin' ? 'Admin Panel' : 'Parent Portal'}
+          </p>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
+      <nav className="flex-1 space-y-1 overflow-y-auto pr-3 pb-4">
         {role === 'student' &&
           studentNav.map((item) => <NavRow key={item.label} item={item} />)}
 

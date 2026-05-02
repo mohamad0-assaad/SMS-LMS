@@ -1,15 +1,35 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { isAppRole } from '../types/role'
+import { AcademicYearsPage } from './data/AcademicYearsPage'
 import { ActivityLogsPage } from './data/ActivityLogsPage'
+import { AdminSettingsPage } from './data/AdminSettingsPage'
+import { AdminTimetablePage } from './data/AdminTimetablePage'
+import { AiClassInsightsPage } from './data/AiClassInsightsPage'
 import { ClassesListPage } from './data/ClassesListPage'
+import { CreateClassPage } from './data/CreateClassPage'
+import { RegisterUserPage } from './data/RegisterUserPage'
+import { StudentAiCoachPage } from './data/StudentAiCoachPage'
+import { StudentExamTakePage } from './data/StudentExamTakePage'
+import { StudentExamsPage } from './data/StudentExamsPage'
+import { StudentResourcesPage } from './data/StudentResourcesPage'
+import { StudentResultsPage } from './data/StudentResultsPage'
+import { StudentSkillInsightPage } from './data/StudentSkillInsightPage'
+import { StudentTimetablePage } from './data/StudentTimetablePage'
+import { SubjectsListPage } from './data/SubjectsListPage'
+import { TeacherAiExamPage } from './data/TeacherAiExamPage'
+import { TeacherExamDetailPage } from './data/TeacherExamDetailPage'
+import { TeacherExamsPage } from './data/TeacherExamsPage'
+import { TeacherResourcesPage } from './data/TeacherResourcesPage'
+import { TeacherResultsPage } from './data/TeacherResultsPage'
 import { UsersListPage } from './data/UsersListPage'
 import { SectionPlaceholder } from './SectionPlaceholder'
 
-function firstSegment(role: string, pathname: string): string {
+function segments(role: string, pathname: string): string[] {
   const prefix = `/app/${role}/`
-  if (!pathname.startsWith(prefix)) return ''
+  if (!pathname.startsWith(prefix)) return []
   const rest = pathname.slice(prefix.length).replace(/\/$/, '')
-  return rest.split('/')[0] ?? ''
+  if (!rest) return []
+  return rest.split('/').filter(Boolean)
 }
 
 export function AppSection() {
@@ -21,17 +41,52 @@ export function AppSection() {
   }
 
   const role = roleParam
-  const seg = firstSegment(role, pathname)
+  const seg = segments(role, pathname)
+  const [a, b, c] = seg
 
   if (role === 'admin') {
-    if (seg === 'users') return <UsersListPage title="Users" />
-    if (seg === 'classes') return <ClassesListPage />
-    if (seg === 'logs') return <ActivityLogsPage />
+    if (a === 'users' && b === 'register') return <RegisterUserPage />
+    if (a === 'users') return <UsersListPage title="Users" />
+    if (a === 'classes' && (b === 'new' || b === 'create')) return <CreateClassPage />
+    if (a === 'classes') return <ClassesListPage />
+    if (a === 'subjects') return <SubjectsListPage />
+    if (a === 'years') return <AcademicYearsPage />
+    if (a === 'settings') return <AdminSettingsPage />
+    if (a === 'logs') return <ActivityLogsPage />
+    if (a === 'timetable') return <AdminTimetablePage />
+    if (a === 'ai-insights') return <AiClassInsightsPage />
+    if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
+    if (a === 'exams' && b) return <TeacherExamDetailPage />
+    if (a === 'exams') {
+      return (
+        <TeacherExamsPage
+          title="All exams"
+          description="Exams across the school (admin view)"
+        />
+      )
+    }
   }
 
   if (role === 'teacher') {
-    if (seg === 'students') return <UsersListPage title="Students" filterRole="student" />
-    if (seg === 'classes') return <ClassesListPage />
+    if (a === 'students' && b && c === 'skill') return <StudentSkillInsightPage />
+    if (a === 'students') return <UsersListPage title="Students" filterRole="student" />
+    if (a === 'classes') return <ClassesListPage />
+    if (a === 'exams' && b) return <TeacherExamDetailPage />
+    if (a === 'exams') return <TeacherExamsPage />
+    if (a === 'results') return <TeacherResultsPage />
+    if (a === 'resources') return <TeacherResourcesPage />
+    if (a === 'ai' && b === 'exam') return <TeacherAiExamPage />
+    if (a === 'ai-insights') return <AiClassInsightsPage />
+    if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
+  }
+
+  if (role === 'student') {
+    if (a === 'timetable') return <StudentTimetablePage />
+    if (a === 'exams' && b) return <StudentExamTakePage />
+    if (a === 'exams') return <StudentExamsPage />
+    if (a === 'results') return <StudentResultsPage />
+    if (a === 'ai-coach') return <StudentAiCoachPage />
+    if (a === 'resources') return <StudentResourcesPage />
   }
 
   return <SectionPlaceholder />

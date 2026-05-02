@@ -43,7 +43,7 @@ export function ParentDashboard() {
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               i === activeChild
                 ? 'bg-violet-600 text-white shadow-md shadow-violet-600/25'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+                : 'bg-white/[0.06] text-slate-400 ring-1 ring-white/[0.08] hover:bg-white/[0.10] hover:text-white'
             }`}
           >
             {name}
@@ -58,8 +58,8 @@ export function ParentDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-3">
-          <h2 className="text-base font-semibold text-slate-900">Performance overview</h2>
+        <section className="rounded-2xl border border-white/[0.08] bg-[#111827] p-6 shadow-lg lg:col-span-3">
+          <h2 className="text-base font-semibold text-white">Performance overview</h2>
           <p className="mt-1 text-sm text-slate-500">
             {children[activeChild]} — score vs class average (weekly)
           </p>
@@ -97,23 +97,23 @@ export function ParentDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-3">
-          <h2 className="text-base font-semibold text-slate-900">Recent exams</h2>
-          <ul className="mt-4 divide-y divide-slate-100">
+        <section className="rounded-2xl border border-white/[0.08] bg-[#111827] p-6 shadow-lg lg:col-span-3">
+          <h2 className="text-base font-semibold text-white">Recent exams</h2>
+          <ul className="mt-4 divide-y divide-white/[0.06]">
             {exams.map((e) => (
               <li key={e.name} className="flex items-center justify-between py-3 first:pt-0">
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{e.name}</p>
-                  <p className="text-xs font-medium text-violet-600">{e.rating}</p>
+                  <p className="text-sm font-medium text-white">{e.name}</p>
+                  <p className="text-xs font-medium text-violet-400">{e.rating}</p>
                 </div>
-                <span className="text-sm font-semibold text-slate-800">{e.score}</span>
+                <span className="text-sm font-semibold text-slate-200">{e.score}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
-          <h2 className="text-base font-semibold text-slate-900">Quick actions</h2>
+        <section className="rounded-2xl border border-white/[0.08] bg-[#111827] p-6 shadow-lg lg:col-span-2">
+          <h2 className="text-base font-semibold text-white">Quick actions</h2>
           <div className="mt-4 space-y-2">
             <QuickActionButton icon={Download} label="Download report card" />
             <QuickActionButton icon={Mail} label="Contact teachers" />

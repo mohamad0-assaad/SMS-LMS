@@ -7,8 +7,8 @@ import Timetable from "../models/timetable.ts";
  import Submission from "../models/submission.ts";
 
 import { NonRetriableError } from "inngest";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
+import { getGeminiModel } from "../config/geminiModel.ts";
 
 interface GenSettings {
   startTime: string;
@@ -115,16 +115,9 @@ export const generateTimeTable = inngest.createFunction(
            }
       `;
 
-      const google = createGoogleGenerativeAI({
-        apiKey,
-      });
-
-      // I will show you how to get one if these does not work for you
-      const activeModel = google("gemini-3-flash-preview");
-
       const { text } = await generateText({
         prompt,
-        model: activeModel,
+        model: getGeminiModel(apiKey),
       });
 
       const cleanJSON = text.replace(/```json/g, "").replace(/```/g, "");
@@ -189,16 +182,9 @@ export const generateExam = inngest.createFunction(
         2. Ensure correct answer matches one of the options exactly.
       `;
 
-      const google = createGoogleGenerativeAI({
-        apiKey,
-      });
-
-      // I will show you how to get one if these does not work for you
-      const activeModel = google("gemini-3-flash-preview");
-
       const { text } = await generateText({
         prompt,
-        model: activeModel,
+        model: getGeminiModel(apiKey),
       });
 
       // Sanitize JSON

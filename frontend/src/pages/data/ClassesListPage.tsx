@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { getJson } from '../../lib/api'
 
 type Populated = { name?: string; email?: string } | string
@@ -23,6 +24,8 @@ function label(v: Populated | undefined): string {
 }
 
 export function ClassesListPage() {
+  const { role } = useParams()
+  const base = role ? `/app/${role}` : ''
   const [data, setData] = useState<ClassesResponse | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -48,25 +51,38 @@ export function ClassesListPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold text-slate-900">Classes</h1>
-        <p className="text-sm text-slate-500">
-          Live data from <code className="rounded bg-white px-1">GET /api/classes</code>
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-lg font-semibold text-white">Classes</h1>
+          <p className="text-sm text-slate-500">
+            Live data from <code className="rounded bg-white/[0.06] px-1 text-slate-300">GET /api/classes</code>
+            {role === 'teacher'
+              ? ' — only classes where you are the assigned class teacher.'
+              : ''}
+          </p>
+        </div>
+        {role === 'admin' ? (
+          <Link
+            to={`${base}/classes/new`}
+            className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800"
+          >
+            Create class
+          </Link>
+        ) : null}
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-600">Loading…</p>
+        <p className="text-sm text-slate-400">Loading…</p>
       ) : err ? (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+        <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">
           {err}
         </div>
       ) : !data?.classes.length ? (
-        <p className="text-sm text-slate-600">No classes yet. Create one from the API or admin tools.</p>
+        <p className="text-sm text-slate-400">No classes yet. Create one from the API or admin tools.</p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#111827] shadow-lg">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase text-slate-500">
+            <thead className="border-b border-white/[0.08] bg-[#0d1525] text-xs font-semibold uppercase text-slate-500">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Academic year</th>
@@ -74,18 +90,18 @@ export function ClassesListPage() {
                 <th className="px-4 py-3">Capacity</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/[0.06]">
               {data.classes.map((c) => (
-                <tr key={c._id} className="hover:bg-slate-50/80">
-                  <td className="px-4 py-3 font-medium text-slate-900">{c.name}</td>
-                  <td className="px-4 py-3 text-slate-600">{label(c.academicYear)}</td>
-                  <td className="px-4 py-3 text-slate-600">{label(c.classTeacher)}</td>
-                  <td className="px-4 py-3 text-slate-600">{c.capacity ?? '—'}</td>
+                <tr key={c._id} className="hover:bg-white/[0.04]">
+                  <td className="px-4 py-3 font-medium text-white">{c.name}</td>
+                  <td className="px-4 py-3 text-slate-400">{label(c.academicYear)}</td>
+                  <td className="px-4 py-3 text-slate-400">{label(c.classTeacher)}</td>
+                  <td className="px-4 py-3 text-slate-400">{c.capacity ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-500">
+          <div className="border-t border-white/[0.04] px-4 py-2 text-xs text-slate-500">
             Showing {data.classes.length} of {data.pagination.total} classes
           </div>
         </div>

@@ -1,31 +1,103 @@
 import { type Request, type Response } from "express";
 import { logActivity } from "../utils/activitieslog.ts";
 import Timetable from "../models/timetable.ts";
-import { inngest } from "../inngest/index.ts";
+import Class from "../models/class.ts";
+import User from "../models/user.ts";
+import { generateText } from "ai";
+import { getGeminiModel } from "../config/geminiModel.ts";
 
-// @desc    Generate a Timetable using AI
+// @desc    Generate a Timetable using AI (synchronous)
 // @route   POST /api/timetables/generate
 // @access  Private/Admin
 export const generateTimetable = async (req: Request, res: Response) => {
   try {
     const { classId, academicYearId, settings } = req.body;
 
-    await inngest.send({
-      name: "generate/timetable",
-      data: {
-        classId,
-        academicYearId,
-        settings,
-      },
-    });
+    if (!classId || !academicYearId) {
+      res.status(400).json({ message: "classId and academicYearId are required" });
+      return;
+    }
+
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey) {
+      res.status(500).json({ message: "GOOGLE_GENERATIVE_AI_API_KEY is not configured" });
+      return;
+    }
+
+    // Fetch class + subjects
+    const classData = await Class.findById(classId).populate("subjects");
+    if (!classData) {
+      res.status(404).json({ message: "Class not found" });
+      return;
+    }
+
+    // Find teachers whose subject list overlaps with this class
+    const classSubjectIds = classData.subjects.map((s: any) => s._id.toString());
+    const allTeachers = await User.find({ role: "teacher" });
+    const qualifiedTeachers = allTeachers
+      .filter((t) => t.teacherSubject?.some((sid) => classSubjectIds.includes(sid.toString())))
+      .map((t) => ({ id: t._id, name: t.name, subjects: t.teacherSubject }));
+
+    const subjectsPayload = classData.subjects.map((s: any) => ({
+      id: s._id,
+      name: s.name,
+      code: s.code,
+    }));
+
+    if (!subjectsPayload.length || !qualifiedTeachers.length) {
+      res.status(400).json({ message: "No subjects or qualified teachers found for this class" });
+      return;
+    }
+
+    // Fetch existing timetables for clash detection
+    const allTimetables = await Timetable.find({ academicYear: academicYearId });
+
+    const { startTime = "08:00", endTime = "15:00", periods = 7 } = settings ?? {};
+
+    const prompt = `
+You are a school scheduler. Generate a weekly timetable (Monday to Friday).
+
+CONTEXT:
+- Class: ${classData.name}
+- Hours: ${startTime} to ${endTime} (${periods} periods/day).
+
+RESOURCES:
+- Subjects: ${JSON.stringify(subjectsPayload)}
+- Teachers: ${JSON.stringify(qualifiedTeachers)}
+- Other Timetables: ${JSON.stringify(allTimetables)}
+
+STRICT RULES:
+1. Assign a Teacher to every Subject period.
+2. Teacher MUST have the subject ID in their list.
+3. Break Time/Free Period after every 2 periods (10 minutes), Lunch after 5 periods (30 minutes).
+4. Avoid teacher clashes with other classes.
+5. Output strict JSON only. Schema:
+   {
+     "schedule": [
+       {
+         "day": "Monday",
+         "periods": [
+           { "subject": "SUBJECT_ID", "teacher": "TEACHER_ID", "startTime": "HH:MM", "endTime": "HH:MM" }
+         ]
+       }
+     ]
+   }
+`;
+
+    const { text } = await generateText({ prompt, model: getGeminiModel(apiKey) });
+    const cleanJSON = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const aiSchedule = JSON.parse(cleanJSON) as { schedule: any[] };
+
+    // Replace any existing timetable for this class+year
+    await Timetable.findOneAndDelete({ class: classId, academicYear: academicYearId });
+    await Timetable.create({ class: classId, academicYear: academicYearId, schedule: aiSchedule.schedule });
+
     const userId = (req as any).user._id;
-    await logActivity({
-      userId,
-      action: `Requested timetable generation for class ID: ${classId}`,
-    });
-    res.status(200).json({ message: "Timetable generation initiated" });
-  } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    await logActivity({ userId, action: `Generated timetable for class ID: ${classId}` });
+
+    res.status(200).json({ message: "Timetable generated successfully" });
+  } catch (error: any) {
+    res.status(500).json({ message: error?.message ?? "Server Error", error });
   }
 };
 

@@ -76,7 +76,7 @@ export function MiniBarChart({ data, className = '' }: MiniBarChartProps) {
                 textAnchor="middle"
                 fontSize={11}
                 fontWeight={600}
-                fill="#334155"
+                fill="#94a3b8"
               >
                 {row.label}
               </text>

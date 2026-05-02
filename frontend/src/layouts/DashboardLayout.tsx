@@ -26,48 +26,50 @@ export function DashboardLayout() {
   const [sessionReady, setSessionReady] = useState(false)
 
   const roleValid = isAppRole(roleParam)
-  const demo = roleValid ? loadDemo() : null
-  const demoWrongRole = Boolean(
-    roleValid && demo && demo.role !== roleParam,
-  )
 
   useEffect(() => {
-    if (!roleValid || demoWrongRole) return
+    if (!roleValid) return
 
     const role = roleParam as AppRole
-    const stored = loadDemo()
-    if (stored?.role === role) {
-      setUserName(stored.name)
-      setSessionReady(true)
-      return
-    }
-
     let cancelled = false
-    getProfile().then((p) => {
-      if (cancelled) return
-      if (!p || !isAppRole(p.role)) {
+    getProfile()
+      .then((p) => {
+        if (cancelled) return
+        if (p && isAppRole(p.role)) {
+          localStorage.setItem(DEMO_KEY, JSON.stringify({ name: p.name, role: p.role }))
+          if (p.role !== role) {
+            navigate(`/app/${p.role}`, { replace: true })
+            return
+          }
+          setUserName(p.name)
+          setSessionReady(true)
+          return
+        }
+        const stored = loadDemo()
+        if (stored?.role === role) {
+          setUserName(stored.name)
+          setSessionReady(true)
+          return
+        }
         navigate('/login', { replace: true })
-        return
-      }
-      if (p.role !== role) {
-        navigate(`/app/${p.role}`, { replace: true })
-        return
-      }
-      localStorage.setItem(DEMO_KEY, JSON.stringify({ name: p.name, role: p.role }))
-      setUserName(p.name)
-      setSessionReady(true)
-    })
+      })
+      .catch(() => {
+        if (cancelled) return
+        const stored = loadDemo()
+        if (stored?.role === role) {
+          setUserName(stored.name)
+          setSessionReady(true)
+          return
+        }
+        navigate('/login', { replace: true })
+      })
     return () => {
       cancelled = true
     }
-  }, [roleParam, roleValid, demoWrongRole, navigate])
+  }, [roleParam, roleValid, navigate])
 
   if (!roleValid) {
     return <Navigate to="/login" replace />
-  }
-
-  if (demoWrongRole && demo) {
-    return <Navigate to={`/app/${demo.role}`} replace />
   }
 
   const role = roleParam as AppRole
@@ -93,7 +95,7 @@ export function DashboardLayout() {
 
   if (!sessionReady) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-slate-100 font-sans text-slate-600">
+      <div className="flex min-h-svh items-center justify-center bg-[#0b1120] font-sans text-slate-500">
         Loading…
       </div>
     )
@@ -103,8 +105,12 @@ export function DashboardLayout() {
     <div className="flex min-h-svh font-sans">
       <AppSidebar role={role} userName={userName} onLogout={handleLogout} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <AppHeader greetingName={userName.split(' ')[0] ?? userName} subtitle={headerSubtitle} />
-        <main className="flex-1 overflow-auto bg-slate-100 p-6">
+        <AppHeader
+          greetingName={userName.split(' ')[0] ?? userName}
+          subtitle={headerSubtitle}
+          role={role}
+        />
+        <main className="flex-1 overflow-auto bg-[#0b1120] p-6">
           <Outlet context={{ role, userName }} />
         </main>
       </div>

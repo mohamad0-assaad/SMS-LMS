@@ -1,4 +1,6 @@
 import { type Request, type Response } from "express";
+import mongoose from "mongoose";
+import Class from "../models/class.ts";
 import User from "../models/user.ts";
 import { generateToken } from "../utils/generateToken.ts";
 // import { generateToken } from "../utils/generateToken.ts";
@@ -21,6 +23,37 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       teacherSubject,
       isActive,
     } = req.body;
+    const assignedClass = req.body.assignedClass as string | undefined;
+    const authUser = (req as AuthRequest).user;
+
+    if (authUser?.role === "teacher" && role !== "student") {
+      res.status(403).json({ message: "Teachers can only register students" });
+      return;
+    }
+
+    if (role === "student") {
+      if (!studentClass || !mongoose.isValidObjectId(studentClass)) {
+        res.status(400).json({ message: "Select a class for the student" });
+        return;
+      }
+      const cls = await Class.findById(studentClass);
+      if (!cls) {
+        res.status(400).json({ message: "Class not found" });
+        return;
+      }
+    }
+
+    if (role === "teacher" && authUser?.role === "admin") {
+      if (!assignedClass || !mongoose.isValidObjectId(assignedClass)) {
+        res.status(400).json({ message: "Select a class for this teacher (class teacher)" });
+        return;
+      }
+      const cls = await Class.findById(assignedClass);
+      if (!cls) {
+        res.status(400).json({ message: "Class not found" });
+        return;
+      }
+    }
 
     // check if user already exists
     const existingUser = await User.findOne({ email });
@@ -36,10 +69,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       email,
       password,
       role,
-      studentClass,
+      studentClass: role === "student" ? studentClass : undefined,
       teacherSubject,
       isActive,
     });
+
+    if (role === "student" && studentClass) {
+      await Class.findByIdAndUpdate(studentClass, { $addToSet: { students: newUser._id } });
+    }
+    if (role === "teacher" && assignedClass) {
+      await Class.findByIdAndUpdate(assignedClass, { classTeacher: newUser._id });
+    }
 
     if (newUser) {
       // we don't have req.user type defined, so we use a type assertion
@@ -73,17 +113,42 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 // @access  Public
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-
-    // check if user exists and password matches
-    if (user && (await user.matchPassword(password))) {
-      // generate token
-      generateToken(user.id.toString(), res);
-      res.json(user);
-    } else {
-      res.status(401).json({ message: "Invalid email or password" });
+    const rawEmail = req.body.email;
+    const password = req.body.password;
+    const email = typeof rawEmail === "string" ? rawEmail.trim() : "";
+    if (!email || !password) {
+      res.status(400).json({ message: "Email and password are required" });
+      return;
     }
+
+    const emailEscaped = email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const user = await User.findOne({
+      email: new RegExp(`^${emailEscaped}$`, "i"),
+    });
+
+    if (!user) {
+      res.status(401).json({ message: "Invalid email or password" });
+      return;
+    }
+
+    if (user.isActive === false) {
+      res.status(403).json({ message: "This account is disabled." });
+      return;
+    }
+
+    if (!(await user.matchPassword(password))) {
+      res.status(401).json({ message: "Invalid email or password" });
+      return;
+    }
+
+    generateToken(user.id.toString(), res);
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });
   }
@@ -226,6 +291,7 @@ export const getUserProfile = async (req: AuthRequest, res: Response) => {
           name: req.user.name,
           email: req.user.email,
           role: req.user.role,
+          studentClass: (req.user as { studentClass?: unknown }).studentClass ?? null,
         },
       });
     } else {

@@ -2,10 +2,11 @@ import express from "express";
 import {
   triggerExamGeneration,
   getExams,
+  getMyExamResults,
   submitExam,
   getExamById,
   toggleExamStatus,
-   getExamResult,
+  getExamResult,
 } from "../controllers/exam.ts";
 import { protect, authorize } from "../middleware/auth.ts";
 
@@ -17,6 +18,13 @@ examRouter.post(
   protect,
   authorize(["teacher", "admin"]),
   triggerExamGeneration
+);
+
+examRouter.get(
+  "/my-results",
+  protect,
+  authorize(["student"]),
+  getMyExamResults
 );
 
 examRouter.get(
@@ -46,15 +54,15 @@ examRouter.patch(
 examRouter.get(
   "/:id/result",
   protect,
-  getExamResult,
-  authorize(["student", "admin", "teacher"])
+  authorize(["student", "admin", "teacher"]),
+  getExamResult
 );
 
 examRouter.get(
   "/:id",
   protect,
-  getExamById,
-  authorize(["teacher", "student", "admin"])
+  authorize(["teacher", "student", "admin"]),
+  getExamById
 );
 
 export default examRouter;

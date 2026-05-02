@@ -7,6 +7,7 @@ export type LoginUser = {
   name: string
   email: string
   role: AppRole
+  studentClass?: string | null
 }
 
 function url(path: string) {
@@ -37,12 +38,26 @@ export async function getJson<T>(path: string): Promise<T> {
   return body as T
 }
 
+export async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const res = await apiFetch(path, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+  const data = (await res.json().catch(() => ({}))) as T & { message?: string }
+  if (!res.ok) {
+    const msg =
+      typeof data.message === 'string' ? data.message : `Request failed (${res.status})`
+    throw new Error(msg)
+  }
+  return data as T
+}
+
 /** Returns null if not logged in (401 / no cookie). */
 export async function getProfile(): Promise<LoginUser | null> {
   const res = await apiFetch('/api/users/profile')
   if (!res.ok) return null
   const data = (await res.json()) as {
-    user?: { _id?: string; name?: string; email?: string; role?: string }
+    user?: { _id?: string; name?: string; email?: string; role?: string; studentClass?: string | null }
   }
   const u = data.user
   if (!u?.name || !u?.role) return null
@@ -51,6 +66,7 @@ export async function getProfile(): Promise<LoginUser | null> {
     name: u.name,
     email: u.email ?? '',
     role: u.role as AppRole,
+    studentClass: u.studentClass ?? null,
   }
 }
 
