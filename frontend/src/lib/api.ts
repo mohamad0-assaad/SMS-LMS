@@ -52,22 +52,35 @@ export async function postJson<T>(path: string, body: unknown): Promise<T> {
   return data as T
 }
 
-/** Returns null if not logged in (401 / no cookie). */
+let _profileCache: LoginUser | null | undefined = undefined
+let _profilePromise: Promise<LoginUser | null> | null = null
+
+/** Returns null if not logged in (401 / no cookie). Result is cached for the session lifetime. */
 export async function getProfile(): Promise<LoginUser | null> {
-  const res = await apiFetch('/api/users/profile')
-  if (!res.ok) return null
-  const data = (await res.json()) as {
-    user?: { _id?: string; name?: string; email?: string; role?: string; studentClass?: string | null }
-  }
-  const u = data.user
-  if (!u?.name || !u?.role) return null
-  return {
-    _id: u._id,
-    name: u.name,
-    email: u.email ?? '',
-    role: u.role as AppRole,
-    studentClass: u.studentClass ?? null,
-  }
+  if (_profileCache !== undefined) return _profileCache
+  if (_profilePromise) return _profilePromise
+  _profilePromise = apiFetch('/api/users/profile').then(async (res) => {
+    if (!res.ok) { _profileCache = null; return null }
+    const data = (await res.json()) as {
+      user?: { _id?: string; name?: string; email?: string; role?: string; studentClass?: string | null }
+    }
+    const u = data.user
+    if (!u?.name || !u?.role) { _profileCache = null; return null }
+    _profileCache = {
+      _id: u._id,
+      name: u.name,
+      email: u.email ?? '',
+      role: u.role as AppRole,
+      studentClass: u.studentClass ?? null,
+    }
+    return _profileCache
+  }).finally(() => { _profilePromise = null })
+  return _profilePromise
+}
+
+export function clearProfileCache() {
+  _profileCache = undefined
+  _profilePromise = null
 }
 
 export async function loginRequest(email: string, password: string): Promise<LoginUser> {

@@ -5,9 +5,16 @@ import { ActivityLogsPage } from './data/ActivityLogsPage'
 import { AdminSettingsPage } from './data/AdminSettingsPage'
 import { AdminTimetablePage } from './data/AdminTimetablePage'
 import { AiClassInsightsPage } from './data/AiClassInsightsPage'
+import { AssignmentsPage } from './data/AssignmentsPage'
+import { AttendancePage } from './data/AttendancePage'
 import { ClassesListPage } from './data/ClassesListPage'
 import { CreateClassPage } from './data/CreateClassPage'
+import { ExpensesPage } from './data/ExpensesPage'
+import { FeesPage } from './data/FeesPage'
+import { MaterialsPage } from './data/MaterialsPage'
 import { RegisterUserPage } from './data/RegisterUserPage'
+import { ReportCardPage } from './data/ReportCardPage'
+import { SalaryPage } from './data/SalaryPage'
 import { StudentAiCoachPage } from './data/StudentAiCoachPage'
 import { StudentExamTakePage } from './data/StudentExamTakePage'
 import { StudentExamsPage } from './data/StudentExamsPage'
@@ -54,6 +61,13 @@ export function AppSection() {
     if (a === 'settings') return <AdminSettingsPage />
     if (a === 'logs') return <ActivityLogsPage />
     if (a === 'timetable') return <AdminTimetablePage />
+    if (a === 'attendance') return <AttendancePage />
+    if (a === 'assignments') return <AssignmentsPage />
+    if (a === 'materials') return <MaterialsPage />
+    if (a === 'fees') return <FeesPage />
+    if (a === 'expenses') return <ExpensesPage />
+    if (a === 'salary') return <SalaryPage />
+    if (a === 'report-cards') return <ReportCardPage />
     if (a === 'ai-insights') return <AiClassInsightsPage />
     if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
     if (a === 'exams' && b) return <TeacherExamDetailPage />
@@ -75,6 +89,11 @@ export function AppSection() {
     if (a === 'exams') return <TeacherExamsPage />
     if (a === 'results') return <TeacherResultsPage />
     if (a === 'resources') return <TeacherResourcesPage />
+    if (a === 'attendance') return <AttendancePage />
+    if (a === 'assignments') return <AssignmentsPage />
+    if (a === 'materials') return <MaterialsPage />
+    if (a === 'fees') return <FeesPage />
+    if (a === 'report-cards') return <ReportCardPage />
     if (a === 'ai' && b === 'exam') return <TeacherAiExamPage />
     if (a === 'ai-insights') return <AiClassInsightsPage />
     if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
@@ -87,6 +106,11 @@ export function AppSection() {
     if (a === 'results') return <StudentResultsPage />
     if (a === 'ai-coach') return <StudentAiCoachPage />
     if (a === 'resources') return <StudentResourcesPage />
+    if (a === 'attendance') return <AttendancePage />
+    if (a === 'assignments') return <AssignmentsPage />
+    if (a === 'materials') return <MaterialsPage />
+    if (a === 'fees') return <FeesPage />
+    if (a === 'report-cards') return <ReportCardPage />
   }
 
   return <SectionPlaceholder />

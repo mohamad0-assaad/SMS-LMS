@@ -62,7 +62,8 @@ export const getAllClasses = async (req: Request, res: Response) => {
         .populate("classTeacher", "name email")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
     ]);
 
     // 4. Return Data + Pagination Meta

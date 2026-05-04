@@ -35,7 +35,7 @@ function avgColor(n: number) {
   return 'text-teal-400'
 }
 
-type TeacherStats = { myClassesCount?: number; pendingGrading?: number; nextClass?: string }
+type TeacherStats = { myClassesCount?: number; totalStudentsInMyClasses?: number; pendingGrading?: number; nextClass?: string }
 
 export function TeacherDashboard() {
   const { role } = useParams()
@@ -104,8 +104,8 @@ export function TeacherDashboard() {
               <Users className="h-4 w-4 text-blue-400" />
             </div>
           </div>
-          <p className="mt-2 text-3xl font-bold text-white">{stats?.myClassesCount != null ? stats.myClassesCount * 7 : 28}</p>
-          <p className="mt-1 text-xs text-slate-500">100% engagement</p>
+          <p className="mt-2 text-3xl font-bold text-white">{stats?.totalStudentsInMyClasses ?? '—'}</p>
+          <p className="mt-1 text-xs text-slate-500">Across {stats?.myClassesCount ?? '—'} class{stats?.myClassesCount !== 1 ? 'es' : ''}</p>
         </div>
 
         <div className="rounded-xl border border-white/[0.06] bg-[#111827] p-5 shadow-lg">

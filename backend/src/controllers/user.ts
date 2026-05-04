@@ -231,11 +231,11 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       User.countDocuments(filter), // Get total count for pagination logic
       User.find(filter)
         .select("-password")
-        // .populate("studentClass", "_id name section") // Added section for context
-        // .populate("teacherSubjects", "_id name code")
+        .populate("children", "name")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
     ]);
 
     // 4. Send Response
@@ -302,10 +302,51 @@ export const getUserProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// @desc    Set children for a parent (admin only)
+// @route   PUT /api/users/:id/children
+// @access  Private/Admin
+export const setParentChildren = async (req: AuthRequest, res: Response) => {
+  try {
+    const parent = await User.findById(req.params.id);
+    if (!parent) return res.status(404).json({ message: "User not found" });
+    if (parent.role !== "parent") return res.status(400).json({ message: "User is not a parent" });
+
+    const { childrenIds } = req.body;
+    if (!Array.isArray(childrenIds)) return res.status(400).json({ message: "childrenIds must be an array" });
+
+    parent.children = childrenIds;
+    await parent.save();
+
+    const populated = await User.findById(parent._id)
+      .populate("children", "name email studentClass")
+      .lean();
+
+    await logActivity({ userId: req.user!._id.toString(), action: `Updated children for parent ${parent.name}` });
+    res.json({ message: "Children updated", children: (populated as any)?.children ?? [] });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+// @desc    Get parent's linked children with class info
+// @route   GET /api/users/my-children
+// @access  Private/Parent
+export const getMyChildren = async (req: AuthRequest, res: Response) => {
+  try {
+    const parent = await User.findById(req.user!._id)
+      .populate({ path: "children", select: "name email studentClass", populate: { path: "studentClass", select: "name" } })
+      .lean();
+
+    res.json({ children: (parent as any)?.children ?? [] });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout
 // @access  Public
-export const logoutUser = async (req: Request, res: Response) => {
+export const logoutUser = async (_req: Request, res: Response) => {
   try {
     res.cookie("jwt", "", {
       httpOnly: true,

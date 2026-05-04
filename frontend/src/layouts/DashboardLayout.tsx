@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, Outlet, useNavigate, useParams } from 'react-router-dom'
 import { AppHeader } from '../components/layout/AppHeader'
 import { AppSidebar } from '../components/layout/AppSidebar'
-import { getProfile, logoutRequest } from '../lib/api'
+import { clearProfileCache, getProfile, logoutRequest } from '../lib/api'
 import { isAppRole, type AppRole } from '../types/role'
 
 const DEMO_KEY = 'skillup-demo-profile'
@@ -89,6 +89,7 @@ export function DashboardLayout() {
     } catch {
       /* cookie may already be gone */
     }
+    clearProfileCache()
     localStorage.removeItem(DEMO_KEY)
     navigate('/login', { replace: true })
   }

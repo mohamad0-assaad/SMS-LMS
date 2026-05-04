@@ -1,6 +1,6 @@
 import express from "express";
 const userRoutes=express.Router();
-import{register,login, updateUser, deleteUser, logoutUser, getUserProfile, getUsers} from "../controllers/user"
+import{register,login, updateUser, deleteUser, logoutUser, getUserProfile, getUsers, setParentChildren, getMyChildren} from "../controllers/user"
 import { protect, authorize } from "../middleware/auth.ts";
 
 
@@ -11,4 +11,6 @@ userRoutes.get("/",protect,authorize(["admin","teacher"]),getUsers);
 userRoutes.post("/register",protect,authorize(["admin","teacher"]),register);
 userRoutes.put("/update/:id",protect,authorize(["admin","teacher"]),updateUser);
 userRoutes.delete("/delete/:id",protect,authorize(["admin","teacher"]),deleteUser);
+userRoutes.get("/my-children", protect, authorize(["parent"]), getMyChildren);
+userRoutes.put("/:id/children", protect, authorize(["admin"]), setParentChildren);
 export default userRoutes;

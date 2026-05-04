@@ -1,8 +1,10 @@
 import { Activity, AlertTriangle, CalendarDays, ClipboardList, ListOrdered, School, Sparkles, UserPlus, Users } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { MiniLineChart } from '../components/dashboard/MiniLineChart'
 import { StatCard } from '../components/dashboard/StatCard'
+import { getJson } from '../lib/api'
 
 const growth = [
   { month: 'Jan', enrollment: 68, pass: 72 },
@@ -13,33 +15,51 @@ const growth = [
   { month: 'Jun', enrollment: 94, pass: 83 },
 ]
 
-const activity = [
-  { time: '10:42 AM', text: 'New exam created — Grade 11 CS', dot: 'bg-teal-500' },
-  { time: '09:18 AM', text: 'User registered (teacher account)', dot: 'bg-violet-500' },
-  { time: 'Yesterday', text: 'Timetable updated for Term 2', dot: 'bg-blue-500' },
-  { time: 'Yesterday', text: 'Subject "Physics" edited by admin', dot: 'bg-amber-500' },
-]
-
 const flagged = [
   { name: 'Julian Martinez', grade: '11', subject: 'Calculus', score: 58, level: 'critical' },
   { name: 'Sara Ahmed',      grade: '10', subject: 'Physics',  score: 61, level: 'warning' },
   { name: 'Liam Chen',       grade: '11', subject: 'CS',       score: 63, level: 'warning' },
 ]
 
+type AdminStats = {
+  totalStudents?: number
+  totalTeachers?: number
+  activeExams?: number
+  activeClasses?: number
+  avgAttendance?: string
+  recentActivity?: string[]
+}
+
 export function AdminDashboard() {
   const { role } = useParams()
   const navigate = useNavigate()
   const base = `/app/${role ?? 'admin'}`
+  const [stats, setStats] = useState<AdminStats | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    getJson<AdminStats>('/api/dashboard/stats')
+      .then((s) => { if (!cancelled) setStats(s) })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
+
+  const activity = stats?.recentActivity?.length
+    ? stats.recentActivity.map((text, i) => ({
+        text,
+        dot: ['bg-teal-500', 'bg-violet-500', 'bg-blue-500', 'bg-amber-500', 'bg-rose-500'][i % 5],
+      }))
+    : []
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard color="teal"   title="Total students"   value="1,240" icon={Users}         trend={{ text: '+12 this week', positive: true }} />
-        <StatCard color="violet" title="Teachers"         value={64}    icon={School} />
-        <StatCard color="blue"   title="Active classes"   value={36}    icon={School} />
-        <StatCard color="amber"  title="Exams conducted"  value={89}    icon={ClipboardList} trend={{ text: '+5 this month', positive: true }} />
+        <StatCard color="teal"   title="Total students"   value={stats?.totalStudents ?? '—'} icon={Users}         trend={stats?.totalStudents != null ? { text: 'Active enrolled students', positive: true } : undefined} />
+        <StatCard color="violet" title="Teachers"         value={stats?.totalTeachers ?? '—'} icon={School} />
+        <StatCard color="blue"   title="Active classes"   value={stats?.activeClasses ?? '—'} icon={School} />
+        <StatCard color="amber"  title="Active exams"     value={stats?.activeExams ?? '—'}   icon={ClipboardList} />
       </div>
 
       {/* Chart + AI Insights */}
@@ -116,17 +136,18 @@ export function AdminDashboard() {
             <Activity className="h-4 w-4 text-teal-400" />
             <h2 className="text-sm font-semibold text-white">Recent Activity</h2>
           </div>
-          <ul className="mt-4 space-y-1">
-            {activity.map((a) => (
-              <li key={a.text} className="flex items-start gap-3 rounded-lg px-3 py-2.5 transition hover:bg-white/[0.02]">
-                <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${a.dot}`} />
-                <div className="min-w-0 flex-1">
+          {activity.length === 0 ? (
+            <p className="mt-4 text-sm text-slate-500">No recent activity yet.</p>
+          ) : (
+            <ul className="mt-4 space-y-1">
+              {activity.map((a, i) => (
+                <li key={i} className="flex items-start gap-3 rounded-lg px-3 py-2.5 transition hover:bg-white/[0.02]">
+                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${a.dot}`} />
                   <p className="text-sm text-slate-200">{a.text}</p>
-                  <p className="text-xs text-slate-600">{a.time}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
           <button
             type="button"
             onClick={() => navigate(`${base}/logs`)}

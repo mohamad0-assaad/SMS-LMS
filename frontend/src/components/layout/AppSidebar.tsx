@@ -1,6 +1,7 @@
 import {
   Activity,
   BarChart3,
+  Banknote,
   BookOpen,
   Bot,
   Calendar,
@@ -8,6 +9,7 @@ import {
   ChevronRight,
   ClipboardList,
   FileText,
+  FolderOpen,
   GraduationCap,
   LayoutDashboard,
   LogOut,
@@ -15,7 +17,9 @@ import {
   School,
   Settings,
   Sparkles,
+  TrendingDown,
   Users,
+  Wallet,
   type LucideIcon,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -63,6 +67,11 @@ export function AppSidebar({ role, userName, onLogout }: AppSidebarProps) {
     { label: 'My Timetable', icon: Calendar, to: `${base}/timetable` },
     { label: 'My Exams', icon: ClipboardList, to: `${base}/exams` },
     { label: 'My Results', icon: BarChart3, to: `${base}/results` },
+    { label: 'Attendance', icon: Activity, to: `${base}/attendance` },
+    { label: 'Assignments', icon: FileText, to: `${base}/assignments` },
+    { label: 'Materials', icon: FolderOpen, to: `${base}/materials` },
+    { label: 'Fees', icon: Banknote, to: `${base}/fees` },
+    { label: 'Report Card', icon: GraduationCap, to: `${base}/report-cards` },
     { label: 'AI Study Coach', icon: Sparkles, to: `${base}/ai-coach` },
     { label: 'Resources', icon: BookOpen, to: `${base}/resources` },
   ]
@@ -73,6 +82,11 @@ export function AppSidebar({ role, userName, onLogout }: AppSidebarProps) {
     { label: 'Students', icon: Users, to: `${base}/students` },
     { label: 'Exams', icon: ClipboardList, to: `${base}/exams` },
     { label: 'Results', icon: BarChart3, to: `${base}/results` },
+    { label: 'Attendance', icon: Activity, to: `${base}/attendance` },
+    { label: 'Assignments', icon: FileText, to: `${base}/assignments` },
+    { label: 'Materials', icon: FolderOpen, to: `${base}/materials` },
+    { label: 'Fees', icon: Banknote, to: `${base}/fees` },
+    { label: 'Report Cards', icon: GraduationCap, to: `${base}/report-cards` },
     { label: 'Resources', icon: BookOpen, to: `${base}/resources` },
     { label: 'AI Insights', icon: Sparkles, to: `${base}/ai-insights` },
   ]
@@ -99,6 +113,13 @@ export function AppSidebar({ role, userName, onLogout }: AppSidebarProps) {
     { label: 'Subjects', icon: BookOpen, to: `${base}/subjects` },
     { label: 'Exams', icon: ClipboardList, to: `${base}/exams` },
     { label: 'Timetable', icon: Calendar, to: `${base}/timetable` },
+    { label: 'Attendance', icon: Activity, to: `${base}/attendance` },
+    { label: 'Assignments', icon: FileText, to: `${base}/assignments` },
+    { label: 'Materials', icon: FolderOpen, to: `${base}/materials` },
+    { label: 'Fees', icon: Banknote, to: `${base}/fees` },
+    { label: 'Expenses', icon: TrendingDown, to: `${base}/expenses` },
+    { label: 'Salary', icon: Wallet, to: `${base}/salary` },
+    { label: 'Report Cards', icon: GraduationCap, to: `${base}/report-cards` },
     { label: 'Academic Years', icon: GraduationCap, to: `${base}/years` },
     { label: 'Activity Logs', icon: Activity, to: `${base}/logs` },
   ]
