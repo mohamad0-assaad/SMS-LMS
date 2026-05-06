@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 
-type Color = 'teal' | 'violet' | 'amber' | 'rose' | 'blue'
+type Color = 'green' | 'amber' | 'rose'
 
 type StatCardProps = {
   title: string
@@ -12,17 +12,15 @@ type StatCardProps = {
 }
 
 const styles: Record<Color, { icon: string; badge: string; bar: string }> = {
-  teal:   { icon: 'text-teal-400',   badge: 'bg-teal-500/10',   bar: 'bg-teal-500' },
-  violet: { icon: 'text-violet-400', badge: 'bg-violet-500/10', bar: 'bg-violet-500' },
+  green:  { icon: 'text-green-400',  badge: 'bg-green-500/10',  bar: 'bg-green-500' },
   amber:  { icon: 'text-amber-400',  badge: 'bg-amber-500/10',  bar: 'bg-amber-500' },
   rose:   { icon: 'text-rose-400',   badge: 'bg-rose-500/10',   bar: 'bg-rose-500' },
-  blue:   { icon: 'text-blue-400',   badge: 'bg-blue-500/10',   bar: 'bg-blue-500' },
 }
 
-export function StatCard({ title, value, icon: Icon, trend, sub, color = 'teal' }: StatCardProps) {
+export function StatCard({ title, value, icon: Icon, trend, sub, color = 'green' }: StatCardProps) {
   const s = styles[color]
   return (
-    <div className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-[#111827] p-5 shadow-lg">
+    <div className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-[#111111] p-5 shadow-lg">
       <div className={`absolute left-0 top-0 h-full w-0.5 ${s.bar} opacity-70`} />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">

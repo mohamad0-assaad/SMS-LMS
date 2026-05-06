@@ -16,7 +16,7 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0d1525] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0d1a0d] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-base font-semibold text-white">{title}</h3>
           <button onClick={onClose} className="rounded-lg p-1 text-slate-500 hover:text-white"><X className="h-4 w-4" /></button>
@@ -146,8 +146,8 @@ export function FeesPage() {
     finally { setBulkSaving(false) }
   }
 
-  const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50'
-  const selectCls = 'w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white outline-none'
+  const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50'
+  const selectCls = 'w-full rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white outline-none'
   const labelCls = 'block text-xs font-medium text-slate-400 mb-1.5'
 
   return (
@@ -163,7 +163,7 @@ export function FeesPage() {
             <button onClick={() => setBulkOpen(true)} className="flex items-center gap-2 rounded-xl border border-white/[0.08] px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/[0.04] hover:text-white">
               <Users className="h-4 w-4" /> Bulk Invoice
             </button>
-            <button onClick={() => setShowForm((v) => !v)} className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+            <button onClick={() => setShowForm((v) => !v)} className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
               <Plus className="h-4 w-4" /> Create Invoice
             </button>
           </div>
@@ -176,12 +176,12 @@ export function FeesPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: 'Total Invoiced', value: `$${stats.totalInvoiced.toFixed(2)}`, icon: Wallet, color: 'text-teal-400' },
+          { label: 'Total Invoiced', value: `$${stats.totalInvoiced.toFixed(2)}`, icon: Wallet, color: 'text-green-400' },
           { label: 'Total Collected', value: `$${stats.totalCollected.toFixed(2)}`, icon: TrendingUp, color: 'text-emerald-400' },
           { label: 'Outstanding', value: `$${stats.totalOutstanding.toFixed(2)}`, icon: AlertCircle, color: 'text-rose-400' },
           { label: 'Unpaid Invoices', value: stats.unpaidCount, icon: CheckCircle2, color: 'text-amber-400' },
         ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-[#111827] p-5">
+          <div key={label} className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-[#111111] p-5">
             <div>
               <p className="text-xs text-slate-500">{label}</p>
               <p className="mt-1 text-2xl font-bold text-white">{value}</p>
@@ -193,7 +193,7 @@ export function FeesPage() {
 
       {/* Create Invoice form */}
       {showForm && role !== 'student' && (
-        <form onSubmit={createFee} className="rounded-2xl border border-white/[0.08] bg-[#111827] p-5 space-y-4">
+        <form onSubmit={createFee} className="rounded-2xl border border-white/[0.08] bg-[#111111] p-5 space-y-4">
           <h2 className="text-sm font-semibold text-white">Create Invoice</h2>
           <div className="grid gap-4 lg:grid-cols-4">
             <div><label className={labelCls}>Student</label>
@@ -221,14 +221,14 @@ export function FeesPage() {
             </div>
             <div className="flex items-end justify-end gap-3">
               <button type="button" onClick={() => setShowForm(false)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
-              <button type="submit" disabled={saving} className="rounded-xl bg-teal-600 px-5 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">{saving ? 'Saving…' : 'Create Invoice'}</button>
+              <button type="submit" disabled={saving} className="rounded-xl bg-green-600 px-5 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{saving ? 'Saving…' : 'Create Invoice'}</button>
             </div>
           </div>
         </form>
       )}
 
       {/* Table */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111827] overflow-hidden">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
         <div className="flex flex-col gap-3 border-b border-white/[0.06] p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold text-white">Fee Records</h2>
@@ -237,9 +237,9 @@ export function FeesPage() {
           <div className="flex flex-wrap items-center gap-2">
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search student or description" className="w-52 rounded-xl border border-white/[0.08] bg-white/[0.04] pl-9 pr-3 py-2 text-sm text-white outline-none focus:border-teal-500/50 placeholder:text-slate-600" />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search student or description" className="w-52 rounded-xl border border-white/[0.08] bg-white/[0.04] pl-9 pr-3 py-2 text-sm text-white outline-none focus:border-green-500/50 placeholder:text-slate-600" />
             </div>
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white outline-none">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white outline-none">
               <option value="all">All statuses</option>
               <option value="unpaid">Unpaid</option>
               <option value="partial">Partial</option>
@@ -282,12 +282,12 @@ export function FeesPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button disabled={f.status === 'paid'} onClick={() => { setPayFee(f); setPayAmount(String(f.balance || f.amount)); setPayMethod('cash'); setPayRef(''); setErr(null) }}
-                          className="rounded-lg p-1.5 text-slate-500 hover:bg-teal-500/10 hover:text-teal-400 disabled:opacity-30 disabled:cursor-not-allowed" title="Record Payment">
+                          className="rounded-lg p-1.5 text-slate-500 hover:bg-green-500/10 hover:text-green-400 disabled:opacity-30 disabled:cursor-not-allowed" title="Record Payment">
                           <CheckCircle2 className="h-4 w-4" />
                         </button>
                         {role === 'admin' && (
                           <button onClick={() => { setStatusFee(f); setNewStatus(f.status); setErr(null) }}
-                            className="rounded-lg p-1.5 text-slate-500 hover:bg-violet-500/10 hover:text-violet-400" title="Update Status">
+                            className="rounded-lg p-1.5 text-slate-500 hover:bg-green-500/10 hover:text-green-400" title="Update Status">
                             <Edit3 className="h-4 w-4" />
                           </button>
                         )}
@@ -325,7 +325,7 @@ export function FeesPage() {
         </div>
         <div className="mt-5 flex justify-end gap-3">
           <button onClick={() => setPayFee(null)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
-          <button onClick={handlePay} disabled={paying} className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">{paying ? 'Saving…' : 'Record Payment'}</button>
+          <button onClick={handlePay} disabled={paying} className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{paying ? 'Saving…' : 'Record Payment'}</button>
         </div>
       </Modal>
 
@@ -341,7 +341,7 @@ export function FeesPage() {
         </div>
         <div className="mt-5 flex justify-end gap-3">
           <button onClick={() => setStatusFee(null)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
-          <button onClick={handleUpdateStatus} disabled={updatingStatus} className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-50">{updatingStatus ? 'Saving…' : 'Update Status'}</button>
+          <button onClick={handleUpdateStatus} disabled={updatingStatus} className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{updatingStatus ? 'Saving…' : 'Update Status'}</button>
         </div>
       </Modal>
 
@@ -368,7 +368,7 @@ export function FeesPage() {
           </div>
           <div className="mt-5 flex justify-end gap-3">
             <button type="button" onClick={() => setBulkOpen(false)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
-            <button type="submit" disabled={bulkSaving} className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">
+            <button type="submit" disabled={bulkSaving} className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">
               <Users className="h-4 w-4" />{bulkSaving ? 'Creating…' : 'Create for All Students'}
             </button>
           </div>

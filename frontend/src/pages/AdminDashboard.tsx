@@ -47,7 +47,7 @@ export function AdminDashboard() {
   const activity = stats?.recentActivity?.length
     ? stats.recentActivity.map((text, i) => ({
         text,
-        dot: ['bg-teal-500', 'bg-violet-500', 'bg-blue-500', 'bg-amber-500', 'bg-rose-500'][i % 5],
+        dot: ['bg-green-500', 'bg-emerald-500', 'bg-green-400', 'bg-green-600', 'bg-green-700'][i % 5],
       }))
     : []
 
@@ -56,15 +56,15 @@ export function AdminDashboard() {
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard color="teal"   title="Total students"   value={stats?.totalStudents ?? '—'} icon={Users}         trend={stats?.totalStudents != null ? { text: 'Active enrolled students', positive: true } : undefined} />
-        <StatCard color="violet" title="Teachers"         value={stats?.totalTeachers ?? '—'} icon={School} />
-        <StatCard color="blue"   title="Active classes"   value={stats?.activeClasses ?? '—'} icon={School} />
+        <StatCard color="green"  title="Total students"   value={stats?.totalStudents ?? '—'} icon={Users}         trend={stats?.totalStudents != null ? { text: 'Active enrolled students', positive: true } : undefined} />
+        <StatCard color="green"  title="Teachers"         value={stats?.totalTeachers ?? '—'} icon={School} />
+        <StatCard color="green"  title="Active classes"   value={stats?.activeClasses ?? '—'} icon={School} />
         <StatCard color="amber"  title="Active exams"     value={stats?.activeExams ?? '—'}   icon={ClipboardList} />
       </div>
 
       {/* Chart + AI Insights */}
       <div className="grid gap-5 lg:grid-cols-5">
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg lg:col-span-3">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg lg:col-span-3">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-white">System Overview</h2>
@@ -79,14 +79,14 @@ export function AdminDashboard() {
               yDomain={[60, 100]}
               ariaLabel="Enrollment and pass rate trends"
               series={[
-                { key: 'enrollment', name: 'Enrollment index', color: '#14b8a6' },
-                { key: 'pass',       name: 'Exam pass %',      color: '#8b5cf6' },
+                { key: 'enrollment', name: 'Enrollment index', color: '#16a34a' },
+                { key: 'pass',       name: 'Exam pass %',      color: '#22c55e' },
               ]}
             />
           </div>
         </section>
 
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-5 shadow-lg lg:col-span-2">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-5 shadow-lg lg:col-span-2">
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/10">
               <AlertTriangle className="h-4 w-4 text-rose-400" />
@@ -112,16 +112,16 @@ export function AdminDashboard() {
               </li>
             ))}
           </ul>
-          <div className="mt-4 rounded-xl border border-violet-500/20 bg-gradient-to-br from-[#1a1040] to-[#0f0a2e] p-3">
+          <div className="mt-4 rounded-xl border border-green-500/20 bg-[#0d1a0d] p-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-3.5 w-3.5 text-violet-400" />
-              <span className="text-xs font-semibold text-violet-300">AI Recommendation</span>
+              <Sparkles className="h-3.5 w-3.5 text-green-400" />
+              <span className="text-xs font-semibold text-green-300">AI Recommendation</span>
             </div>
             <p className="mt-1 text-xs text-slate-400">Schedule targeted review for Recursion — avg 54% in CS Grade 11.</p>
             <button
               type="button"
               onClick={() => navigate(`${base}/ai-insights`)}
-              className="mt-2 text-xs font-medium text-violet-400 hover:underline"
+              className="mt-2 text-xs font-medium text-green-400 hover:underline"
             >
               Open AI Insights →
             </button>
@@ -131,9 +131,9 @@ export function AdminDashboard() {
 
       {/* Activity + Quick Actions */}
       <div className="grid gap-5 lg:grid-cols-5">
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg lg:col-span-3">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg lg:col-span-3">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-teal-400" />
+            <Activity className="h-4 w-4 text-green-400" />
             <h2 className="text-sm font-semibold text-white">Recent Activity</h2>
           </div>
           {activity.length === 0 ? (
@@ -157,7 +157,7 @@ export function AdminDashboard() {
           </button>
         </section>
 
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg lg:col-span-2">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg lg:col-span-2">
           <h2 className="text-sm font-semibold text-white">Quick Actions</h2>
           <div className="mt-3 space-y-2">
             {[
@@ -172,7 +172,7 @@ export function AdminDashboard() {
                 onClick={() => navigate(to)}
                 className="flex w-full items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-white/[0.06] hover:text-white"
               >
-                <Icon className="h-4 w-4 text-teal-400 shrink-0" strokeWidth={1.8} />
+                <Icon className="h-4 w-4 text-green-400 shrink-0" strokeWidth={1.8} />
                 {label}
               </button>
             ))}

@@ -3,12 +3,12 @@
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-  --color-skill-sidebar: #080e1a;
-  --color-skill-sidebar-hover: #111827;
-  --color-skill-accent: #14b8a6;
-  --color-skill-mint: #14b8a6;
-  --color-skill-page-bg: #0b1120;
-  --color-skill-card: #111827;
+  --color-skill-sidebar: #0a0a0a;
+  --color-skill-sidebar-hover: #111111;
+  --color-skill-accent: #16a34a;
+  --color-skill-mint: #16a34a;
+  --color-skill-page-bg: #080808;
+  --color-skill-card: #111111;
   --color-skill-card-border: rgba(255,255,255,0.06);
 }
 
@@ -17,7 +17,7 @@
     @apply antialiased;
   }
   body {
-    @apply m-0 min-h-svh bg-[#0b1120] text-slate-200;
+    @apply m-0 min-h-svh bg-[#080808] text-slate-200;
   }
   #root {
     @apply min-h-svh;

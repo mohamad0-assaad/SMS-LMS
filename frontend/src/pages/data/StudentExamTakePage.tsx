@@ -139,7 +139,7 @@ export function StudentExamTakePage() {
   if (phase === 'error') {
     return (
       <div className="mx-auto max-w-2xl space-y-4">
-        <Link to={`${base}/exams`} className="inline-flex items-center gap-1.5 text-sm text-teal-400 hover:underline">
+        <Link to={`${base}/exams`} className="inline-flex items-center gap-1.5 text-sm text-green-400 hover:underline">
           <ChevronLeft className="h-4 w-4" /> Back to exams
         </Link>
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
@@ -150,8 +150,8 @@ export function StudentExamTakePage() {
   if (phase === 'done') {
     return (
       <div className="mx-auto max-w-lg space-y-6 text-center">
-        <div className="rounded-2xl border border-white/[0.06] bg-[#111827] p-8 shadow-lg">
-          <CheckCircle className="mx-auto h-12 w-12 text-teal-400" />
+        <div className="rounded-2xl border border-white/[0.06] bg-[#111111] p-8 shadow-lg">
+          <CheckCircle className="mx-auto h-12 w-12 text-green-400" />
           <h1 className="mt-4 text-xl font-bold text-white">Exam submitted!</h1>
           <p className="mt-1 text-sm text-slate-400">{exam?.title}</p>
           <div className="mt-6 flex items-end justify-center gap-1">
@@ -161,14 +161,14 @@ export function StudentExamTakePage() {
           <div className="mt-2 text-sm text-slate-400">{pct}% — {pct >= 80 ? 'Excellent!' : pct >= 60 ? 'Good job!' : 'Keep studying!'}</div>
           <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/10">
             <div
-              className={`h-2 rounded-full transition-all ${pct >= 80 ? 'bg-teal-400' : pct >= 60 ? 'bg-amber-400' : 'bg-rose-400'}`}
+              className={`h-2 rounded-full transition-all ${pct >= 80 ? 'bg-green-400' : pct >= 60 ? 'bg-amber-400' : 'bg-rose-400'}`}
               style={{ width: `${pct}%` }}
             />
           </div>
         </div>
         <Link
           to={`${base}/results`}
-          className="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-teal-500"
+          className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-green-500"
         >
           View all results
         </Link>
@@ -179,7 +179,7 @@ export function StudentExamTakePage() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       {/* Sticky header */}
-      <div className="sticky top-0 z-10 -mx-6 -mt-5 border-b border-white/[0.06] bg-[#0b1120]/95 px-6 py-4 backdrop-blur-sm shadow-sm">
+      <div className="sticky top-0 z-10 -mx-6 -mt-5 border-b border-white/[0.06] bg-[#080808]/95 px-6 py-4 backdrop-blur-sm shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <h1 className="truncate text-base font-semibold text-white">{exam?.title}</h1>
@@ -197,7 +197,7 @@ export function StudentExamTakePage() {
         {/* Progress bar */}
         <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
           <div
-            className="h-1.5 rounded-full bg-violet-500 transition-all duration-300"
+            className="h-1.5 rounded-full bg-green-500 transition-all duration-300"
             style={{ width: totalQ > 0 ? `${(answeredCount / totalQ) * 100}%` : '0%' }}
           />
         </div>
@@ -208,11 +208,11 @@ export function StudentExamTakePage() {
         {exam?.questions.map((q, i) => {
           const selected = answers[q._id]
           return (
-            <li key={q._id} className={`rounded-xl border bg-[#111827] p-5 shadow-lg transition-colors ${
-              selected ? 'border-violet-500/40' : 'border-white/[0.06]'
+            <li key={q._id} className={`rounded-xl border bg-[#111111] p-5 shadow-lg transition-colors ${
+              selected ? 'border-green-500/40' : 'border-white/[0.06]'
             }`}>
               <p className="text-sm font-semibold text-white">
-                <span className="mr-2 text-violet-400">Q{i + 1}.</span>
+                <span className="mr-2 text-green-400">Q{i + 1}.</span>
                 {q.questionText}
               </p>
               {q.options?.length ? (
@@ -223,7 +223,7 @@ export function StudentExamTakePage() {
                       <li key={opt}>
                         <label className={`flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3 text-sm transition-colors ${
                           checked
-                            ? 'border-violet-500/60 bg-violet-500/10 text-violet-200 font-medium'
+                            ? 'border-green-500/60 bg-green-500/10 text-green-200 font-medium'
                             : 'border-white/[0.06] bg-white/[0.02] text-slate-300 hover:border-white/10 hover:bg-white/[0.04]'
                         }`}>
                           <input
@@ -232,7 +232,7 @@ export function StudentExamTakePage() {
                             value={opt}
                             checked={checked}
                             onChange={() => setAnswers((a) => ({ ...a, [q._id]: opt }))}
-                            className="mt-0.5 shrink-0 accent-violet-500"
+                            className="mt-0.5 shrink-0 accent-green-500"
                           />
                           {opt}
                         </label>
@@ -250,7 +250,7 @@ export function StudentExamTakePage() {
       </ol>
 
       {/* Submit */}
-      <div className="rounded-xl border border-white/[0.06] bg-[#111827] p-5 shadow-lg">
+      <div className="rounded-xl border border-white/[0.06] bg-[#111111] p-5 shadow-lg">
         {!allAnswered && (
           <p className="mb-3 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
             {totalQ - answeredCount} question{totalQ - answeredCount !== 1 ? 's' : ''} still unanswered.
@@ -264,7 +264,7 @@ export function StudentExamTakePage() {
           type="button"
           disabled={phase === 'submitting'}
           onClick={() => void submit()}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 py-3 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-500 disabled:opacity-60"
         >
           {phase === 'submitting' ? (
             <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</>

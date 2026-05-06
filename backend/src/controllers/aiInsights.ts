@@ -4,6 +4,9 @@ import type { AuthRequest } from "../middleware/auth.ts";
 import { getGeminiModel } from "../config/geminiModel.ts";
 import Class from "../models/class.ts";
 import Subject from "../models/subject.ts";
+import Submission from "../models/submission.ts";
+import Attendance from "../models/Attendance.ts";
+import Exam from "../models/exam.ts";
 
 /** No retries: quota/rate errors should not be retried (avoids “Failed after 3 attempts”). */
 const AI_CALL = { maxRetries: 0 as const };
@@ -76,10 +79,146 @@ export const aiAsk = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: "prompt is required" });
     }
 
+    const user = req.user!;
+    let systemContext = "";
+
+    // Build rich context for students
+    if (user.role === "student") {
+      try {
+        const studentClassId = (user as any).studentClass;
+
+        // Get class + subjects
+        let className = "";
+        let subjectNames: string[] = [];
+        if (studentClassId) {
+          const cls = await Class.findById(studentClassId)
+            .populate("subjects", "name")
+            .lean();
+          if (cls) {
+            className = cls.name;
+            subjectNames = ((cls as any).subjects ?? []).map(
+              (s: any) => s.name ?? s
+            );
+          }
+        }
+
+        // Get per-subject performance from exam submissions
+        const subs = await Submission.find({ student: user._id })
+          .populate({
+            path: "exam",
+            select: "questions subject",
+            populate: { path: "subject", select: "name" },
+          })
+          .lean();
+
+        const subjectMap = new Map<string, { scores: number[] }>();
+        for (const sub of subs) {
+          const ex = sub.exam as any;
+          const maxScore = Array.isArray(ex?.questions)
+            ? ex.questions.reduce(
+                (s: number, q: any) => s + (q.points ?? 1),
+                0
+              )
+            : 0;
+          if (maxScore <= 0) continue;
+          const subjName =
+            typeof ex?.subject === "object"
+              ? ex.subject?.name
+              : ex?.subject;
+          if (!subjName) continue;
+          if (!subjectMap.has(subjName))
+            subjectMap.set(subjName, { scores: [] });
+          subjectMap
+            .get(subjName)!
+            .scores.push(Math.round((sub.score / maxScore) * 100));
+        }
+
+        const subjectScores = [...subjectMap.entries()]
+          .map(([name, { scores }]) => ({
+            name,
+            avg: Math.round(
+              scores.reduce((a, b) => a + b, 0) / scores.length
+            ),
+          }))
+          .sort((a, b) => a.avg - b.avg);
+
+        const weakest = subjectScores[0] ?? null;
+        const strongest = subjectScores[subjectScores.length - 1] ?? null;
+
+        // Attendance
+        const attRecords = await Attendance.find({ student: user._id }).lean();
+        const attPct =
+          attRecords.length > 0
+            ? Math.round(
+                (attRecords.filter(
+                  (r) => r.status === "present" || r.status === "late"
+                ).length /
+                  attRecords.length) *
+                  100
+              )
+            : null;
+
+        // Total exams taken vs available
+        let courseProgress: string | null = null;
+        if (studentClassId) {
+          const totalExams = await Exam.countDocuments({
+            class: studentClassId,
+            isActive: true,
+          });
+          if (totalExams > 0) {
+            const taken = Math.min(subs.length, totalExams);
+            courseProgress = `${taken}/${totalExams} exams completed (${Math.round((taken / totalExams) * 100)}%)`;
+          }
+        }
+
+        const subjectBreakdown =
+          subjectScores.length > 0
+            ? subjectScores
+                .map((s) => `  • ${s.name}: ${s.avg}% avg`)
+                .join("\n")
+            : "  No exam data yet.";
+
+        systemContext = `
+You are a personalized AI Study Coach for ${user.name}, a student at this school.
+
+STUDENT PROFILE:
+- Name: ${user.name}
+- Class: ${className || "Not assigned yet"}
+- Subjects: ${subjectNames.length > 0 ? subjectNames.join(", ") : "Not assigned yet"}
+- Attendance rate: ${attPct !== null ? `${attPct}%` : "No data"}
+- Course progress: ${courseProgress ?? "No data"}
+
+EXAM PERFORMANCE BY SUBJECT (lowest = needs most attention):
+${subjectBreakdown}
+
+INSIGHTS:
+- Weakest subject: ${weakest ? `${weakest.name} (${weakest.avg}% avg) — focus here first` : "Not enough data yet"}
+- Strongest subject: ${strongest && strongest !== weakest ? `${strongest.name} (${strongest.avg}% avg)` : "Not enough data yet"}
+
+COACHING RULES:
+1. Always be specific to this student's actual subjects and performance when relevant.
+2. If they ask about a topic, relate it to their weakest subject when applicable.
+3. Give concrete, actionable advice — not generic tips.
+4. If they ask what to study, prioritize their weakest subject.
+5. Be encouraging but honest about where they need improvement.
+6. Keep answers focused and concise (no unnecessary padding).
+`.trim();
+      } catch {
+        // If context fetch fails, continue with basic prompt
+      }
+    } else {
+      systemContext =
+        "You are a helpful teaching assistant for a school LMS. Be concise and practical.";
+    }
+
+    const fullPrompt = systemContext
+      ? `${systemContext}\n\nStudent question:\n${prompt.trim()}`
+      : `You are a helpful school assistant.\n\nQuestion:\n${prompt.trim()}`;
+
     const { text } = await generateText({
       ...AI_CALL,
       model: getGeminiModel(apiKey),
-      prompt: `You are a helpful teaching assistant for a school LMS. Be concise and practical.\n\nUser question:\n${prompt.trim()}`,
+      prompt: fullPrompt,
     });
 
     res.json({ answer: text });

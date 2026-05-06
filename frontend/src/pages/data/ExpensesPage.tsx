@@ -48,7 +48,7 @@ export function ExpensesPage() {
           <h1 className="text-lg font-semibold text-white">Expenses</h1>
           <p className="text-sm text-slate-500">Total: <span className="text-rose-400 font-semibold">${total.toLocaleString()}</span></p>
         </div>
-        <button onClick={() => setShowForm((v) => !v)} className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+        <button onClick={() => setShowForm((v) => !v)} className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
           <Plus className="h-4 w-4" /> Add Expense
         </button>
       </div>
@@ -56,29 +56,29 @@ export function ExpensesPage() {
       {err && <p className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</p>}
 
       {showForm && (
-        <form onSubmit={create} className="rounded-2xl border border-white/[0.08] bg-[#111827] p-5 space-y-4">
+        <form onSubmit={create} className="rounded-2xl border border-white/[0.08] bg-[#111111] p-5 space-y-4">
           <h2 className="text-sm font-semibold text-white">New Expense</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block text-sm"><span className="text-slate-400">Title</span>
-              <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
             <label className="block text-sm"><span className="text-slate-400">Category</span>
-              <select value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white">
+              <select value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white">
                 {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
               </select>
             </label>
             <label className="block text-sm"><span className="text-slate-400">Amount ($)</span>
-              <input type="number" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input type="number" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
             <label className="block text-sm"><span className="text-slate-400">Date</span>
-              <input type="date" value={form.date} onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input type="date" value={form.date} onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
           </div>
           <label className="block text-sm"><span className="text-slate-400">Description (optional)</span>
-            <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={2} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none resize-none focus:border-teal-500/50" />
+            <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={2} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none resize-none focus:border-green-500/50" />
           </label>
           <div className="flex gap-3">
-            <button type="submit" disabled={saving} className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">{saving ? 'Saving…' : 'Create'}</button>
+            <button type="submit" disabled={saving} className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{saving ? 'Saving…' : 'Create'}</button>
             <button type="button" onClick={() => setShowForm(false)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
           </div>
         </form>
@@ -87,7 +87,7 @@ export function ExpensesPage() {
       {loading ? <p className="text-sm text-slate-500">Loading…</p> : !expenses.length ? (
         <div className="flex flex-col items-center gap-3 py-16 text-slate-500"><TrendingDown className="h-10 w-10 opacity-30" /><p className="text-sm">No expenses recorded</p></div>
       ) : (
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111827] overflow-hidden">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
           <table className="w-full text-sm">
             <thead><tr className="border-b border-white/[0.06] text-left text-xs text-slate-500"><th className="px-4 py-3">Title</th><th className="px-4 py-3">Category</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Date</th><th className="px-4 py-3"></th></tr></thead>
             <tbody>

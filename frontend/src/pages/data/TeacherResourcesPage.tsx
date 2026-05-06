@@ -9,19 +9,19 @@ export function TeacherResourcesPage() {
       title: 'AI exam generator',
       desc: 'Build a draft exam from a topic and difficulty using Gemini.',
       to: `${base}/ai/exam`,
-      accent: 'from-teal-500/15 to-emerald-500/10',
+      accent: 'from-green-500/15 to-emerald-500/10',
     },
     {
       title: 'Class insights',
       desc: 'Summaries and quiz ideas from your class roster.',
       to: `${base}/ai-insights`,
-      accent: 'from-violet-500/15 to-indigo-500/10',
+      accent: 'from-green-500/15 to-green-500/10',
     },
     {
       title: 'All exams',
       desc: 'List, publish, and open individual exams.',
       to: `${base}/exams`,
-      accent: 'from-sky-500/15 to-blue-500/10',
+      accent: 'from-green-500/15 to-green-500/10',
     },
     {
       title: 'Students',
@@ -44,11 +44,11 @@ export function TeacherResourcesPage() {
           <Link
             key={c.title}
             to={c.to}
-            className={`group rounded-2xl border border-white/[0.08] bg-gradient-to-br ${c.accent} p-5 shadow-lg transition hover:border-teal-500/30`}
+            className={`group rounded-2xl border border-white/[0.08] bg-gradient-to-br ${c.accent} p-5 shadow-lg transition hover:border-green-500/30`}
           >
-            <h2 className="font-semibold text-white group-hover:text-teal-300">{c.title}</h2>
+            <h2 className="font-semibold text-white group-hover:text-green-300">{c.title}</h2>
             <p className="mt-2 text-sm text-slate-400">{c.desc}</p>
-            <span className="mt-3 inline-block text-sm font-semibold text-teal-400">Open →</span>
+            <span className="mt-3 inline-block text-sm font-semibold text-green-400">Open →</span>
           </Link>
         ))}
       </div>

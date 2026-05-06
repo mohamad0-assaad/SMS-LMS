@@ -62,7 +62,7 @@ export function ActivityLogsPage() {
           {data.logs.map((log) => (
             <li
               key={log._id}
-              className="rounded-xl border border-white/[0.08] bg-[#111827] px-4 py-3 shadow-lg"
+              className="rounded-xl border border-white/[0.08] bg-[#111111] px-4 py-3 shadow-lg"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <span className="font-medium text-white">{log.action ?? 'Activity'}</span>

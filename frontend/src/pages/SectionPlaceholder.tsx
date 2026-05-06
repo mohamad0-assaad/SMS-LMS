@@ -7,7 +7,7 @@ export function SectionPlaceholder() {
   const title = location.pathname.split('/').pop()?.replace(/-/g, ' ') ?? 'Section'
 
   return (
-    <div className="mx-auto max-w-lg rounded-2xl border border-white/[0.08] bg-[#111827] p-8 text-center shadow-lg">
+    <div className="mx-auto max-w-lg rounded-2xl border border-white/[0.08] bg-[#111111] p-8 text-center shadow-lg">
       <h2 className="text-lg font-semibold capitalize text-white">{title}</h2>
       <p className="mt-2 text-sm text-slate-500">
         {role === 'student' || role === 'parent' ? (

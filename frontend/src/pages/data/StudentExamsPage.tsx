@@ -57,7 +57,7 @@ export function StudentExamsPage() {
           {err}
         </div>
       ) : !exams.length ? (
-        <div className="rounded-xl border border-white/[0.06] bg-[#111827] px-6 py-10 text-center">
+        <div className="rounded-xl border border-white/[0.06] bg-[#111111] px-6 py-10 text-center">
           <BookOpen className="mx-auto h-8 w-8 text-slate-600" />
           <p className="mt-3 text-sm text-slate-500">No published exams for your class right now.</p>
         </div>
@@ -66,7 +66,7 @@ export function StudentExamsPage() {
           {exams.map((ex) => (
             <li
               key={ex._id}
-              className="rounded-xl border border-white/[0.06] bg-[#111827] p-5 shadow-lg"
+              className="rounded-xl border border-white/[0.06] bg-[#111111] p-5 shadow-lg"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
@@ -91,7 +91,7 @@ export function StudentExamsPage() {
                 </div>
                 <Link
                   to={`${base}/exams/${ex._id}`}
-                  className="shrink-0 rounded-lg bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-violet-500"
+                  className="shrink-0 rounded-lg bg-green-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-green-500"
                 >
                   Start Exam →
                 </Link>

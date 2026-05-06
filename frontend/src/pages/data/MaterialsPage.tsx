@@ -71,7 +71,7 @@ export function MaterialsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-white">Study Materials</h1>
         {role !== 'student' && (
-          <button onClick={() => setShowForm((v) => !v)} className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+          <button onClick={() => setShowForm((v) => !v)} className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
             <Upload className="h-4 w-4" /> Upload
           </button>
         )}
@@ -80,31 +80,31 @@ export function MaterialsPage() {
       {msg && <p className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">{msg}</p>}
 
       {showForm && (
-        <form onSubmit={upload} className="rounded-2xl border border-white/[0.08] bg-[#111827] p-5 space-y-4">
+        <form onSubmit={upload} className="rounded-2xl border border-white/[0.08] bg-[#111111] p-5 space-y-4">
           <h2 className="text-sm font-semibold text-white">Upload Material</h2>
           {err && <p className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">{err}</p>}
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block text-sm"><span className="text-slate-400">Title</span>
-              <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
             <label className="block text-sm"><span className="text-slate-400">Subject</span>
-              <input value={form.subject} onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))} required placeholder="e.g. Mathematics" className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input value={form.subject} onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))} required placeholder="e.g. Mathematics" className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
             <label className="block text-sm"><span className="text-slate-400">Class (optional)</span>
-              <select value={form.classId} onChange={(e) => setForm((f) => ({ ...f, classId: e.target.value }))} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white">
+              <select value={form.classId} onChange={(e) => setForm((f) => ({ ...f, classId: e.target.value }))} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white">
                 <option value="">All classes</option>
                 {classes.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
             </label>
             <label className="block text-sm"><span className="text-slate-400">File</span>
-              <input type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required className="mt-1 w-full text-sm text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-teal-600 file:px-3 file:py-1.5 file:text-sm file:text-white" />
+              <input type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required className="mt-1 w-full text-sm text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-green-600 file:px-3 file:py-1.5 file:text-sm file:text-white" />
             </label>
           </div>
           <label className="block text-sm"><span className="text-slate-400">Description (optional)</span>
-            <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={2} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50 resize-none" />
+            <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={2} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50 resize-none" />
           </label>
           <div className="flex gap-3">
-            <button type="submit" disabled={uploading} className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">{uploading ? 'Uploading…' : 'Upload'}</button>
+            <button type="submit" disabled={uploading} className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{uploading ? 'Uploading…' : 'Upload'}</button>
             <button type="button" onClick={() => setShowForm(false)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
           </div>
         </form>
@@ -115,7 +115,7 @@ export function MaterialsPage() {
       ) : (
         <div className="space-y-3">
           {materials.map((m) => (
-            <div key={m._id} className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#111827] px-5 py-4">
+            <div key={m._id} className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#111111] px-5 py-4">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-white">{m.title}</p>
                 {m.description && <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">{m.description}</p>}
@@ -127,7 +127,7 @@ export function MaterialsPage() {
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <a href={m.downloadUrl} download className="flex items-center gap-1.5 rounded-xl border border-teal-500/30 bg-teal-500/10 px-3 py-1.5 text-xs font-medium text-teal-400 hover:bg-teal-500/20">
+                <a href={m.downloadUrl} download className="flex items-center gap-1.5 rounded-xl border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/20">
                   <Download className="h-3.5 w-3.5" /> Download
                 </a>
                 {role !== 'student' && (

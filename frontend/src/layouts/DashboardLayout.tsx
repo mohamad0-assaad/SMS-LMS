@@ -96,7 +96,7 @@ export function DashboardLayout() {
 
   if (!sessionReady) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-[#0b1120] font-sans text-slate-500">
+      <div className="flex min-h-svh items-center justify-center bg-[#080808] font-sans text-slate-500">
         Loading…
       </div>
     )
@@ -111,7 +111,7 @@ export function DashboardLayout() {
           subtitle={headerSubtitle}
           role={role}
         />
-        <main className="flex-1 overflow-auto bg-[#0b1120] p-6">
+        <main className="flex-1 overflow-auto bg-[#080808] p-6">
           <Outlet context={{ role, userName }} />
         </main>
       </div>

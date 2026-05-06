@@ -46,7 +46,7 @@ export function TeacherExamDetailPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link to={`${base}/exams`} className="inline-flex items-center gap-2 text-sm font-medium text-teal-400 hover:underline">
+      <Link to={`${base}/exams`} className="inline-flex items-center gap-2 text-sm font-medium text-green-400 hover:underline">
         <ArrowLeft className="h-4 w-4" /> All exams
       </Link>
 
@@ -56,7 +56,7 @@ export function TeacherExamDetailPage() {
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !exam ? null : (
         <>
-          <div className="rounded-xl border border-white/[0.08] bg-[#111827] p-6 shadow-lg">
+          <div className="rounded-xl border border-white/[0.08] bg-[#111111] p-6 shadow-lg">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h1 className="text-lg font-semibold text-white">{exam.title}</h1>
@@ -82,8 +82,8 @@ export function TeacherExamDetailPage() {
             ) : (
               <ol className="space-y-3">
                 {exam.questions.map((q, i) => (
-                  <li key={i} className="rounded-xl border border-white/[0.08] bg-[#111827] p-4 text-sm shadow-lg">
-                    <span className="font-semibold text-violet-400">Q{i + 1}</span>
+                  <li key={i} className="rounded-xl border border-white/[0.08] bg-[#111111] p-4 text-sm shadow-lg">
+                    <span className="font-semibold text-green-400">Q{i + 1}</span>
                     <p className="mt-1 text-slate-200">{q.questionText}</p>
                     {q.options?.length ? (
                       <ul className="mt-2 list-inside list-disc text-slate-400">

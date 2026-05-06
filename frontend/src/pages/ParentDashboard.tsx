@@ -63,7 +63,7 @@ export function ParentDashboard() {
           <button key={c._id} type="button" onClick={() => setActiveIdx(i)}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               i === activeIdx
-                ? 'bg-violet-600 text-white shadow-md shadow-violet-600/25'
+                ? 'bg-green-700 text-white shadow-md shadow-green-700/25'
                 : 'bg-white/[0.06] text-slate-400 ring-1 ring-white/[0.08] hover:bg-white/[0.10] hover:text-white'
             }`}>
             {c.name}
@@ -72,15 +72,15 @@ export function ParentDashboard() {
       </div>
 
       {/* Child info */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111827] px-5 py-4 flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 text-violet-400 text-lg font-bold">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] px-5 py-4 flex items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-400 text-lg font-bold">
           {active.name.slice(0, 1).toUpperCase()}
         </div>
         <div>
           <p className="text-sm font-semibold text-white">{active.name}</p>
           <p className="text-xs text-slate-500">{active.email}</p>
           {active.studentClass && (
-            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-teal-500/10 px-2 py-0.5 text-xs text-teal-400 border border-teal-500/20">
+            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-400 border border-green-500/20">
               <GraduationCap className="h-3 w-3" /> {active.studentClass.name}
             </span>
           )}
@@ -89,24 +89,24 @@ export function ParentDashboard() {
 
       {/* Fee summary cards */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111827] p-4">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-4">
           <p className="text-xs text-slate-500">Total Paid</p>
           <p className="mt-1 text-2xl font-bold text-emerald-400">${totalPaid.toLocaleString()}</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111827] p-4">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-4">
           <p className="text-xs text-slate-500">Outstanding Balance</p>
           <p className="mt-1 text-2xl font-bold text-rose-400">${totalOwed.toLocaleString()}</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111827] p-4">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-4">
           <p className="text-xs text-slate-500">Unpaid Fees</p>
           <p className="mt-1 text-2xl font-bold text-amber-400">{unpaidCount}</p>
         </div>
       </div>
 
       {/* Fee records */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111827] overflow-hidden">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
         <div className="flex items-center gap-2 px-5 py-4 border-b border-white/[0.06]">
-          <Banknote className="h-4 w-4 text-teal-400" />
+          <Banknote className="h-4 w-4 text-green-400" />
           <h2 className="text-sm font-semibold text-white">Fee Records</h2>
         </div>
         {loadingFees ? (

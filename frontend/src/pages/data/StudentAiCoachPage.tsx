@@ -20,7 +20,7 @@ function FormattedText({ text }: { text: string }) {
                 .filter((l) => l.trim())
                 .map((line, j) => (
                   <li key={j} className="flex gap-2">
-                    <span className="mt-0.5 shrink-0 text-violet-400">›</span>
+                    <span className="mt-0.5 shrink-0 text-green-400">›</span>
                     <span>{line.replace(/^[•\-\*\d\.]+\s*/, '').trim()}</span>
                   </li>
                 ))}
@@ -109,11 +109,11 @@ export function StudentAiCoachPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-9rem)] max-w-2xl flex-col rounded-2xl border border-white/[0.08] bg-[#111827] shadow-lg overflow-hidden">
+    <div className="mx-auto flex h-[calc(100vh-9rem)] max-w-2xl flex-col rounded-2xl border border-white/[0.08] bg-[#111111] shadow-lg overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-sm">
             <Bot className="h-5 w-5 text-white" strokeWidth={2} />
           </div>
           <div>
@@ -137,14 +137,14 @@ export function StudentAiCoachPage() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
-              <div className="mr-2 mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600">
+              <div className="mr-2 mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600">
                 <Bot className="h-3.5 w-3.5 text-white" strokeWidth={2} />
               </div>
             )}
             <div
               className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
                 msg.role === 'user'
-                  ? 'rounded-tr-sm bg-violet-600 text-white'
+                  ? 'rounded-tr-sm bg-green-600 text-white'
                   : 'rounded-tl-sm border border-white/[0.06] bg-white/[0.04] text-slate-200'
               }`}
             >
@@ -185,14 +185,14 @@ export function StudentAiCoachPage() {
             disabled={busy}
             rows={1}
             placeholder="Ask a study question… (Enter to send, Shift+Enter for newline)"
-            className="flex-1 resize-none rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-violet-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-violet-500/20 disabled:opacity-50 max-h-32 overflow-auto"
+            className="flex-1 resize-none rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-green-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-green-500/20 disabled:opacity-50 max-h-32 overflow-auto"
             style={{ lineHeight: '1.5' }}
           />
           <button
             type="button"
             onClick={() => void send()}
             disabled={busy || !input.trim()}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm transition hover:bg-violet-500 disabled:opacity-40"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-600 text-white shadow-sm transition hover:bg-green-500 disabled:opacity-40"
           >
             <Send className="h-4 w-4" />
           </button>

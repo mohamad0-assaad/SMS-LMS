@@ -18,10 +18,10 @@ function label(p: Pop | undefined): string {
 }
 
 const subjectColors = [
-  'bg-teal-500/10 text-teal-400',
-  'bg-violet-500/10 text-violet-400',
-  'bg-blue-500/10 text-blue-400',
-  'bg-amber-500/10 text-amber-400',
+  'bg-green-500/10 text-green-400',
+  'bg-emerald-500/10 text-emerald-400',
+  'bg-green-600/10 text-green-300',
+  'bg-green-700/10 text-green-400',
 ]
 
 export function StudentDashboard() {
@@ -67,10 +67,10 @@ export function StudentDashboard() {
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard color="teal"   title="Today's classes"  value={todayRows.length} icon={GraduationCap} />
-        <StatCard color="violet" title="Upcoming exams"   value={stats?.pendingAssignments ?? '—'} icon={ClipboardList} />
+        <StatCard color="green"  title="Today's classes"  value={todayRows.length} icon={GraduationCap} />
+        <StatCard color="green"  title="Upcoming exams"   value={stats?.pendingAssignments ?? '—'} icon={ClipboardList} />
         <StatCard
-          color="blue"
+          color="green"
           title="Average score"
           value={avgPct != null ? `${avgPct}%` : '—'}
           icon={TrendingUp}
@@ -81,13 +81,13 @@ export function StudentDashboard() {
 
       {/* Timetable + AI Coach */}
       <div className="grid gap-5 lg:grid-cols-5">
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg lg:col-span-3">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg lg:col-span-3">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-white">Today's Schedule</h2>
               <p className="mt-0.5 text-xs text-slate-500">{todayName}</p>
             </div>
-            <button type="button" onClick={() => navigate(`${base}/timetable`)} className="text-xs font-medium text-teal-400 hover:underline">
+            <button type="button" onClick={() => navigate(`${base}/timetable`)} className="text-xs font-medium text-green-400 hover:underline">
               Full week →
             </button>
           </div>
@@ -119,13 +119,13 @@ export function StudentDashboard() {
 
         {/* AI Coach card */}
         <div className="lg:col-span-2">
-          <div className="relative h-full overflow-hidden rounded-xl border border-teal-500/20 bg-gradient-to-br from-[#071e1e] via-[#0a2828] to-[#071a1a] p-5 shadow-lg">
-            <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-teal-500/15 blur-3xl" />
-            <div className="absolute -bottom-6 left-0 h-20 w-20 rounded-full bg-violet-500/10 blur-2xl" />
+          <div className="relative h-full overflow-hidden rounded-xl border border-green-500/20 bg-[#0d1a0d] p-5 shadow-lg">
+            <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-green-500/15 blur-3xl" />
+            <div className="absolute -bottom-6 left-0 h-20 w-20 rounded-full bg-green-500/10 blur-2xl" />
             <div className="relative flex h-full flex-col">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-teal-400" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-teal-400">AI Study Coach</span>
+                <Sparkles className="h-4 w-4 text-green-400" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-green-400">AI Study Coach</span>
               </div>
               <h3 className="mt-2 text-base font-bold text-white">Personalized for you</h3>
               <p className="mt-2 text-xs text-slate-400 leading-relaxed flex-1">
@@ -144,7 +144,7 @@ export function StudentDashboard() {
               <button
                 type="button"
                 onClick={() => navigate(`${base}/ai-coach`)}
-                className="mt-4 w-full rounded-xl bg-teal-600 py-2.5 text-xs font-bold text-white transition hover:bg-teal-500"
+                className="mt-4 w-full rounded-xl bg-green-700 py-2.5 text-xs font-bold text-white transition hover:bg-green-600"
               >
                 Start Study Session
               </button>
@@ -155,10 +155,10 @@ export function StudentDashboard() {
 
       {/* Recent Results + Quick Actions */}
       <div className="grid gap-5 lg:grid-cols-5">
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg lg:col-span-3">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg lg:col-span-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-white">Recent Results</h2>
-            <button type="button" onClick={() => navigate(`${base}/results`)} className="text-xs font-medium text-teal-400 hover:underline">
+            <button type="button" onClick={() => navigate(`${base}/results`)} className="text-xs font-medium text-green-400 hover:underline">
               All results →
             </button>
           </div>
@@ -194,7 +194,7 @@ export function StudentDashboard() {
           )}
         </section>
 
-        <section className="rounded-xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg lg:col-span-2">
+        <section className="rounded-xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg lg:col-span-2">
           <h2 className="text-sm font-semibold text-white">Quick Actions</h2>
           <div className="mt-3 space-y-2">
             {[
@@ -208,7 +208,7 @@ export function StudentDashboard() {
                 onClick={() => navigate(to)}
                 className="flex w-full items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-white/[0.06] hover:text-white"
               >
-                <Icon className="h-4 w-4 text-teal-400 shrink-0" strokeWidth={1.8} />
+                <Icon className="h-4 w-4 text-green-400 shrink-0" strokeWidth={1.8} />
                 {label}
               </button>
             ))}

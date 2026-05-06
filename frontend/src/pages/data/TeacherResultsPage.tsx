@@ -59,18 +59,18 @@ export function TeacherResultsPage() {
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !exams.length ? (
-        <div className="rounded-2xl border border-dashed border-white/[0.12] bg-[#111827] px-6 py-10 text-center">
+        <div className="rounded-2xl border border-dashed border-white/[0.12] bg-[#111111] px-6 py-10 text-center">
           <p className="font-medium text-slate-300">No exams yet</p>
           <p className="mt-1 text-sm text-slate-500">Generate one with AI or add manual drafts.</p>
-          <Link to={`${base}/ai/exam`} className="mt-4 inline-block rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+          <Link to={`${base}/ai/exam`} className="mt-4 inline-block rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
             AI exam generator
           </Link>
         </div>
       ) : (
         <div className="space-y-6">
           {byClass.map(([cid, { label: classLabel, exams: list }]) => (
-            <section key={cid} className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#111827] shadow-lg">
-              <div className="border-b border-white/[0.06] bg-[#0d1525] px-4 py-3">
+            <section key={cid} className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#111111] shadow-lg">
+              <div className="border-b border-white/[0.06] bg-[#0d1a0d] px-4 py-3">
                 <h2 className="text-sm font-semibold text-white">{classLabel}</h2>
                 <p className="text-xs text-slate-500">{list.length} exam(s)</p>
               </div>

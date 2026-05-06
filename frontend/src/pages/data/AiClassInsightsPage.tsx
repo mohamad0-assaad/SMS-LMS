@@ -58,7 +58,7 @@ function FormattedText({ text }: { text: string }) {
                 .filter((l) => l.trim())
                 .map((line, j) => (
                   <li key={j} className="flex gap-2">
-                    <span className="mt-0.5 shrink-0 text-teal-400">›</span>
+                    <span className="mt-0.5 shrink-0 text-green-400">›</span>
                     <span>{line.replace(/^[•\-\*\d\.]+\s*/, '').trim()}</span>
                   </li>
                 ))}
@@ -79,7 +79,7 @@ function QuizCard({ q, index }: { q: QuizQuestion; index: number }) {
   const [revealed, setRevealed] = useState(false)
   const letters = ['A', 'B', 'C', 'D', 'E']
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-[#111827] p-4 shadow-lg">
+    <div className="rounded-xl border border-white/[0.08] bg-[#111111] p-4 shadow-lg">
       <p className="text-sm font-semibold text-white">
         Q{index + 1}. {q.questionText}
       </p>
@@ -106,7 +106,7 @@ function QuizCard({ q, index }: { q: QuizQuestion; index: number }) {
           <button
             type="button"
             onClick={() => setRevealed(true)}
-            className="text-xs font-medium text-teal-400 hover:underline"
+            className="text-xs font-medium text-green-400 hover:underline"
           >
             Reveal answer
           </button>
@@ -248,7 +248,7 @@ export function AiClassInsightsPage() {
       ? Math.round(Number(skillupResult.failure_risk) * 100)
       : null
 
-  const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50 focus:ring-2 focus:ring-teal-500/20'
+  const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20'
   const labelCls = 'block text-xs font-medium text-slate-400 mb-1'
 
   return (
@@ -267,9 +267,9 @@ export function AiClassInsightsPage() {
       )}
 
       {/* Ask AI */}
-      <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111827] p-5 shadow-lg">
+      <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-5 shadow-lg">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-500/10 text-teal-400">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
             <Brain className="h-4 w-4" />
           </div>
           <h2 className="font-semibold text-white">Ask AI</h2>
@@ -277,30 +277,30 @@ export function AiClassInsightsPage() {
         <textarea
           value={askPrompt}
           onChange={(e) => setAskPrompt(e.target.value)}
-          className="min-h-24 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-500/50 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+          className="min-h-24 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-500/20"
           placeholder="Ask anything about your students, class, curriculum…"
         />
         <button
           type="button"
           disabled={askBusy || !askPrompt.trim()}
           onClick={() => void doAsk()}
-          className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-60"
         >
           {askBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Ask
         </button>
         {askErr && <SectionError msg={askErr} />}
         {askResult && (
-          <div className="rounded-xl border border-teal-500/20 bg-teal-500/[0.06] p-4">
+          <div className="rounded-xl border border-green-500/20 bg-green-500/[0.06] p-4">
             <FormattedText text={askResult} />
           </div>
         )}
       </section>
 
       {/* Smart Recommendation */}
-      <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111827] p-5 shadow-lg">
+      <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-5 shadow-lg">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
             <Sparkles className="h-4 w-4" />
           </div>
           <h2 className="font-semibold text-white">Smart Recommendation</h2>
@@ -346,23 +346,23 @@ export function AiClassInsightsPage() {
           type="button"
           disabled={recBusy || !topic.trim()}
           onClick={() => void doRecommend()}
-          className="flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-60"
         >
           {recBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Generate Recommendation
         </button>
         {recErr && <SectionError msg={recErr} />}
         {recResult && (
-          <div className="rounded-xl border border-violet-500/20 bg-violet-500/[0.06] p-4">
+          <div className="rounded-xl border border-green-500/20 bg-green-500/[0.06] p-4">
             <FormattedText text={recResult} />
           </div>
         )}
       </section>
 
       {/* Generate Class Quiz */}
-      <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111827] p-5 shadow-lg">
+      <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-5 shadow-lg">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
             <BookOpen className="h-4 w-4" />
           </div>
           <h2 className="font-semibold text-white">Generate Class Quiz</h2>
@@ -412,7 +412,7 @@ export function AiClassInsightsPage() {
           type="button"
           disabled={quizBusy || !classId || !subjectId}
           onClick={() => void doQuiz()}
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-60"
         >
           {quizBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
           Generate Draft Quiz
@@ -445,9 +445,9 @@ export function AiClassInsightsPage() {
       </section>
 
       {/* SkillUp ML */}
-      <section className="space-y-4 rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.06] p-5 shadow-lg">
+      <section className="space-y-4 rounded-2xl border border-green-500/20 bg-green-500/[0.06] p-5 shadow-lg">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
             <Brain className="h-4 w-4" />
           </div>
           <div>
@@ -464,7 +464,7 @@ export function AiClassInsightsPage() {
           type="button"
           disabled={skillupBusy}
           onClick={() => void doSkillup()}
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-60"
         >
           {skillupBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Run sample prediction
@@ -489,15 +489,15 @@ export function AiClassInsightsPage() {
               </div>
             )}
             {skillupResult.recommended_topic && (
-              <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4 text-center">
+              <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-center">
                 <p className="text-xs font-medium text-slate-500 mb-1">Recommended Topic</p>
-                <p className="text-sm font-semibold text-violet-300">{skillupResult.recommended_topic}</p>
+                <p className="text-sm font-semibold text-green-300">{skillupResult.recommended_topic}</p>
               </div>
             )}
             {skillupResult.study_strategy && (
-              <div className="rounded-xl border border-teal-500/20 bg-teal-500/10 p-4 text-center">
+              <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-center">
                 <p className="text-xs font-medium text-slate-500 mb-1">Study Strategy</p>
-                <p className="text-sm font-semibold text-teal-300">{skillupResult.study_strategy}</p>
+                <p className="text-sm font-semibold text-green-300">{skillupResult.study_strategy}</p>
               </div>
             )}
           </div>

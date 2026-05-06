@@ -60,7 +60,7 @@ export function MiniBarChart({ data, className = '' }: MiniBarChartProps) {
                 width={BAR}
                 height={Math.max(h1, 0)}
                 rx={4}
-                fill="#7c3aed"
+                fill="#16a34a"
               />
               <rect
                 x={x2}
@@ -68,7 +68,7 @@ export function MiniBarChart({ data, className = '' }: MiniBarChartProps) {
                 width={BAR}
                 height={Math.max(h2, 0)}
                 rx={4}
-                fill="#14b8a6"
+                fill="#22c55e"
               />
               <text
                 x={cx}
@@ -86,10 +86,10 @@ export function MiniBarChart({ data, className = '' }: MiniBarChartProps) {
       </svg>
       <div className="mt-1 flex flex-wrap gap-4 text-xs text-slate-500">
         <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-violet-600" /> Average score
+          <span className="h-2 w-2 rounded-full bg-green-600" /> Average score
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-teal-500" /> Attendance
+          <span className="h-2 w-2 rounded-full bg-green-500" /> Attendance
         </span>
       </div>
     </div>

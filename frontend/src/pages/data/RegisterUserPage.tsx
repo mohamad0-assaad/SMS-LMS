@@ -67,12 +67,12 @@ export function RegisterUserPage() {
     }
   }
 
-  const inputCls = 'mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50 focus:ring-2 focus:ring-teal-500/20'
+  const inputCls = 'mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20'
   const labelCls = 'block text-sm font-medium text-slate-300'
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <Link to={isTeacher ? `${base}/students` : `${base}/users`} className="text-sm font-medium text-teal-400 hover:underline">
+      <Link to={isTeacher ? `${base}/students` : `${base}/users`} className="text-sm font-medium text-green-400 hover:underline">
         {isTeacher ? '← Back to students' : '← Back to users'}
       </Link>
       <div>
@@ -84,7 +84,7 @@ export function RegisterUserPage() {
           Could not load classes: {classesErr}
         </p>
       )}
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111827] p-6 shadow-lg">
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-lg">
         {err && <p className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">{err}</p>}
         {msg && <p className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-400">{msg}</p>}
         <div>
@@ -133,7 +133,7 @@ export function RegisterUserPage() {
           </div>
         )}
         <button type="submit" disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 py-2.5 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-2.5 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">
           {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
           Register
         </button>

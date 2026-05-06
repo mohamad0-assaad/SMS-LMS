@@ -8,7 +8,7 @@ type ClassOption = { _id: string; name: string }
 
 function gradeBadge(grade: string) {
   if (grade === 'A+' || grade === 'A') return 'text-emerald-400'
-  if (grade === 'B') return 'text-teal-400'
+  if (grade === 'B') return 'text-green-400'
   if (grade === 'C') return 'text-amber-400'
   return 'text-rose-400'
 }
@@ -68,12 +68,12 @@ export function ReportCardPage() {
         <h1 className="text-lg font-semibold text-white">Report Cards</h1>
         {role !== 'student' && (
           <div className="flex flex-wrap items-center gap-3">
-            <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="rounded-xl border border-white/[0.08] bg-[#111827] px-3 py-2 text-sm text-white">
+            <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="rounded-xl border border-white/[0.08] bg-[#111111] px-3 py-2 text-sm text-white">
               {classes.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
             </select>
-            <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="e.g. 2024-Term 1" className="w-40 rounded-xl border border-white/[0.08] bg-[#111827] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+            <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="e.g. 2024-Term 1" className="w-40 rounded-xl border border-white/[0.08] bg-[#111111] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             <button onClick={generate} disabled={generating || !selectedClass}
-              className="flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-50">
+              className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">
               <Sparkles className="h-4 w-4" /> {generating ? 'Generating…' : 'Generate'}
             </button>
           </div>
@@ -88,12 +88,12 @@ export function ReportCardPage() {
       ) : (
         <div className="space-y-4">
           {reports.map((r) => (
-            <div key={r._id} className="rounded-2xl border border-white/[0.08] bg-[#111827] overflow-hidden">
+            <div key={r._id} className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
               <button onClick={() => setExpanded((e) => (e === r._id ? null : r._id))} className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-white/[0.02]">
                 <div>
                   {r.student && <p className="text-xs text-slate-500 mb-0.5">{r.student.name}</p>}
                   <p className="text-sm font-semibold text-white">{r.term}</p>
-                  <p className="text-xs text-slate-500">Average: <span className="text-teal-400">{r.averageScore}%</span> · Attendance: <span className="text-violet-400">{r.attendance}%</span></p>
+                  <p className="text-xs text-slate-500">Average: <span className="text-green-400">{r.averageScore}%</span> · Attendance: <span className="text-green-400">{r.attendance}%</span></p>
                 </div>
                 <span className="text-xs text-slate-500">{expanded === r._id ? '▲' : '▼'}</span>
               </button>
@@ -115,8 +115,8 @@ export function ReportCardPage() {
                     </table>
                   </div>
                   {r.teacherComment && (
-                    <div className="rounded-xl border border-violet-500/20 bg-violet-500/[0.06] px-4 py-3">
-                      <p className="text-xs font-semibold text-violet-400 mb-1">Teacher's Comment</p>
+                    <div className="rounded-xl border border-green-500/20 bg-green-500/[0.06] px-4 py-3">
+                      <p className="text-xs font-semibold text-green-400 mb-1">Teacher's Comment</p>
                       <p className="text-sm text-slate-300">{r.teacherComment}</p>
                     </div>
                   )}

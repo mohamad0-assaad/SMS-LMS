@@ -1,29 +1,28 @@
 import type { ReactNode } from 'react'
 
-type Variant = 'purple' | 'teal' | 'navy'
+type Variant = 'green' | 'dark' | 'navy'
 
 const variants: Record<
   Variant,
   { wrap: string; title: string; body: string; button: string }
 > = {
-  purple: {
-    wrap: 'from-violet-600 via-fuchsia-600 to-purple-700',
+  green: {
+    wrap: 'from-green-800 via-green-700 to-emerald-800',
     title: 'text-white',
-    body: 'text-violet-100',
-    button:
-      'bg-white/95 text-violet-700 hover:bg-white shadow-sm',
+    body: 'text-green-100',
+    button: 'bg-white/95 text-green-800 hover:bg-white shadow-sm',
   },
-  teal: {
-    wrap: 'from-teal-700 via-teal-600 to-cyan-700',
+  dark: {
+    wrap: 'from-green-900 via-emerald-900 to-green-900',
     title: 'text-white',
-    body: 'text-teal-100',
-    button: 'bg-white/95 text-teal-800 hover:bg-white shadow-sm',
+    body: 'text-green-200',
+    button: 'bg-white/95 text-green-900 hover:bg-white shadow-sm',
   },
   navy: {
-    wrap: 'from-slate-900 via-indigo-950 to-slate-900',
+    wrap: 'from-[#0a0a0a] via-[#0d1a0d] to-[#0a0a0a]',
     title: 'text-white',
     body: 'text-slate-300',
-    button: 'bg-indigo-500 text-white hover:bg-indigo-400',
+    button: 'bg-green-600 text-white hover:bg-green-500',
   },
 }
 
@@ -37,7 +36,7 @@ type AIGradientCardProps = {
 }
 
 export function AIGradientCard({
-  variant = 'purple',
+  variant = 'green',
   eyebrow,
   title,
   children,

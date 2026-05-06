@@ -59,37 +59,37 @@ export function AssignmentsPage() {
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-white">Assignments</h1>
-        {role !== 'student' && (
+        {(role === 'admin' || role === 'teacher') && (
           <button onClick={() => setShowForm((v) => !v)}
-            className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+            className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
             <Plus className="h-4 w-4" /> New Assignment
           </button>
         )}
       </div>
 
       {showForm && (
-        <form onSubmit={create} className="rounded-2xl border border-white/[0.08] bg-[#111827] p-5 space-y-4">
+        <form onSubmit={create} className="rounded-2xl border border-white/[0.08] bg-[#111111] p-5 space-y-4">
           <h2 className="text-sm font-semibold text-white">Create Assignment</h2>
           {err && <p className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">{err}</p>}
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block text-sm">
               <span className="text-slate-400">Title</span>
-              <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
             <label className="block text-sm">
               <span className="text-slate-400">Due Date</span>
-              <input type="date" value={form.dueDate} onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50" />
+              <input type="date" value={form.dueDate} onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50" />
             </label>
             <label className="block text-sm">
               <span className="text-slate-400">Subject</span>
-              <select value={form.subject} onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white">
+              <select value={form.subject} onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white">
                 <option value="">Select subject</option>
                 {subjects.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
               </select>
             </label>
             <label className="block text-sm">
               <span className="text-slate-400">Class</span>
-              <select value={form.class} onChange={(e) => setForm((f) => ({ ...f, class: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white">
+              <select value={form.class} onChange={(e) => setForm((f) => ({ ...f, class: e.target.value }))} required className="mt-1 w-full rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white">
                 <option value="">Select class</option>
                 {classes.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
@@ -97,10 +97,10 @@ export function AssignmentsPage() {
           </div>
           <label className="block text-sm">
             <span className="text-slate-400">Description</span>
-            <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} required rows={3} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50 resize-none" />
+            <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} required rows={3} className="mt-1 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50 resize-none" />
           </label>
           <div className="flex gap-3">
-            <button type="submit" disabled={saving} className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">{saving ? 'Creating…' : 'Create'}</button>
+            <button type="submit" disabled={saving} className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{saving ? 'Creating…' : 'Create'}</button>
             <button type="button" onClick={() => setShowForm(false)} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
           </div>
         </form>
@@ -114,7 +114,7 @@ export function AssignmentsPage() {
       ) : (
         <div className="space-y-3">
           {assignments.map((a) => (
-            <div key={a._id} className="flex items-start justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#111827] px-5 py-4">
+            <div key={a._id} className="flex items-start justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#111111] px-5 py-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold text-white">{a.title}</p>
@@ -127,7 +127,7 @@ export function AssignmentsPage() {
                   <span>· Due {new Date(a.dueDate).toLocaleDateString()}</span>
                 </div>
               </div>
-              {role !== 'student' && (
+              {(role === 'admin' || role === 'teacher') && (
                 <button onClick={() => remove(a._id)} className="shrink-0 rounded-lg p-2 text-slate-600 hover:bg-rose-500/10 hover:text-rose-400">
                   <Trash2 className="h-4 w-4" />
                 </button>

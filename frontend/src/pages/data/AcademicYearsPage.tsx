@@ -44,7 +44,7 @@ export function AcademicYearsPage() {
           {rows.map((y) => (
             <li
               key={y._id}
-              className="rounded-xl border border-white/[0.08] bg-[#111827] px-4 py-3 shadow-lg"
+              className="rounded-xl border border-white/[0.08] bg-[#111111] px-4 py-3 shadow-lg"
             >
               <p className="font-medium text-white">{y.name}</p>
             </li>

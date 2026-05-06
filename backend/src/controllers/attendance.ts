@@ -110,10 +110,11 @@ export const getMyAttendance = async (req: AuthRequest, res: Response) => {
     const present = records.filter((r) => r.status === "present").length;
     const absent = records.filter((r) => r.status === "absent").length;
     const late = records.filter((r) => r.status === "late").length;
+    const attended = present + late;
 
     res.json({
       total, present, absent, late,
-      percentage: total ? Math.round((present / total) * 100) : 0,
+      percentage: total ? Math.round((attended / total) * 100) : 0,
       history: records.map((r) => ({
         _id: r._id,
         className: (r.class as any)?.name || "Unknown",

@@ -1,5 +1,6 @@
 import { type Request, type Response } from "express";
 import Class from "../models/class.ts";
+import User from "../models/user.ts";
 import { logActivity } from "../utils/activitieslog.ts";
 import mongoose from "mongoose";
 
@@ -124,6 +125,64 @@ export const updateClass = async (req: Request, res: Response) => {
     });
   }
 };
+// @desc    Get students enrolled in a class
+// @route   GET /api/classes/:id/students
+// @access  Private (admin, teacher)
+export const getClassStudents = async (req: Request, res: Response) => {
+  try {
+    const cls = await Class.findById(req.params.id)
+      .populate("students", "name email isActive")
+      .lean();
+    if (!cls) return res.status(404).json({ message: "Class not found" });
+    res.json({ students: (cls as any).students ?? [] });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+// @desc    Set students enrolled in a class (admin only)
+// @route   PUT /api/classes/:id/students
+// @access  Private/Admin
+export const setClassStudents = async (req: Request, res: Response) => {
+  try {
+    const classId = req.params.id;
+    const { studentIds } = req.body;
+
+    if (!Array.isArray(studentIds)) {
+      return res.status(400).json({ message: "studentIds must be an array" });
+    }
+
+    const cls = await Class.findById(classId);
+    if (!cls) return res.status(404).json({ message: "Class not found" });
+
+    const oldIds = (cls.students ?? []).map(String);
+    const newIds = studentIds.map(String);
+
+    const toRemove = oldIds.filter((id) => !newIds.includes(id));
+    const toAdd = newIds.filter((id) => !oldIds.includes(id));
+
+    cls.students = studentIds as any;
+    await cls.save();
+
+    if (toRemove.length) {
+      await User.updateMany(
+        { _id: { $in: toRemove }, studentClass: classId },
+        { $unset: { studentClass: 1 } }
+      );
+    }
+    if (toAdd.length) {
+      await User.updateMany(
+        { _id: { $in: toAdd } },
+        { $set: { studentClass: classId } }
+      );
+    }
+
+    res.json({ message: "Students updated", count: studentIds.length });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
 // @desc    Delete Class
 // @route   DELETE /api/classes/:id
 // @access  Private/Admin

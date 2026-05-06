@@ -43,7 +43,7 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
           <h1 className="text-lg font-semibold text-white">{title}</h1>
           <p className="text-sm text-slate-500">{description}</p>
         </div>
-        <Link to={`${base}/ai/exam`} className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-violet-500">
+        <Link to={`${base}/ai/exam`} className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
           <Sparkles className="h-4 w-4" /> Generate with AI
         </Link>
       </div>
@@ -53,11 +53,11 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !exams.length ? (
-        <div className="rounded-2xl border border-dashed border-white/[0.12] bg-[#111827] p-10 text-center shadow-lg">
+        <div className="rounded-2xl border border-dashed border-white/[0.12] bg-[#111111] p-10 text-center shadow-lg">
           <ClipboardList className="mx-auto h-10 w-10 text-slate-600" />
           <p className="mt-3 font-medium text-slate-300">No exams yet</p>
           <p className="mt-1 text-sm text-slate-500">Create your first assessment with the AI generator.</p>
-          <Link to={`${base}/ai/exam`} className="mt-4 inline-block rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+          <Link to={`${base}/ai/exam`} className="mt-4 inline-block rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
             Generate exam
           </Link>
         </div>
@@ -69,9 +69,9 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
             return (
               <li key={ex._id}>
                 <Link to={`${base}/exams/${ex._id}`}
-                  className="flex h-full flex-col rounded-xl border border-white/[0.08] bg-[#111827] p-5 shadow-lg transition hover:border-teal-500/30">
+                  className="flex h-full flex-col rounded-xl border border-white/[0.08] bg-[#111111] p-5 shadow-lg transition hover:border-green-500/30">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs font-bold uppercase tracking-wide text-violet-400">Exam {i + 1}</span>
+                    <span className="text-xs font-bold uppercase tracking-wide text-green-400">Exam {i + 1}</span>
                     <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${draft ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
                       {draft ? 'Draft' : 'Published'}
                     </span>

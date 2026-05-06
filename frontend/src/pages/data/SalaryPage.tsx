@@ -7,7 +7,7 @@ type UserOption = { _id: string; name: string; role: string }
 
 function statusBadge(s: string) {
   if (s === 'Paid') return <span className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">Paid</span>
-  if (s === 'Processing') return <span className="rounded-lg border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400">Processing</span>
+  if (s === 'Processing') return <span className="rounded-lg border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-400">Processing</span>
   return <span className="rounded-lg border border-slate-500/30 bg-slate-500/10 px-2 py-0.5 text-xs font-medium text-slate-400">Pending</span>
 }
 
@@ -15,7 +15,7 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0d1525] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0d1a0d] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-base font-semibold text-white">{title}</h3>
           <button onClick={onClose} className="rounded-lg p-1 text-slate-500 hover:text-white"><X className="h-4 w-4" /></button>
@@ -107,8 +107,8 @@ export function SalaryPage() {
   }
 
   const isTeacher = role === 'teacher'
-  const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-teal-500/50'
-  const selectCls = 'w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-3 py-2 text-sm text-white outline-none'
+  const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50'
+  const selectCls = 'w-full rounded-xl border border-white/[0.08] bg-[#0d1a0d] px-3 py-2 text-sm text-white outline-none'
   const labelCls = 'block text-xs font-medium text-slate-400 mb-1.5'
 
   return (
@@ -120,7 +120,7 @@ export function SalaryPage() {
           <p className="text-sm text-slate-500">{isTeacher ? 'Your monthly salary payments from the school.' : 'Manage payroll records and payment status.'}</p>
         </div>
         {!isTeacher && (
-          <button onClick={() => { setCreateOpen(true); setErr(null) }} className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
+          <button onClick={() => { setCreateOpen(true); setErr(null) }} className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">
             <Plus className="h-4 w-4" /> Add Salary Record
           </button>
         )}
@@ -132,12 +132,12 @@ export function SalaryPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: isTeacher ? 'Total Earned' : 'Total Payroll', value: `$${stats.totalPayroll.toFixed(2)}`, icon: Briefcase, color: 'text-teal-400' },
+          { label: isTeacher ? 'Total Earned' : 'Total Payroll', value: `$${stats.totalPayroll.toFixed(2)}`, icon: Briefcase, color: 'text-green-400' },
           { label: isTeacher ? 'Total Received' : 'Total Paid', value: `$${stats.totalPaid.toFixed(2)}`, icon: CheckCircle2, color: 'text-emerald-400' },
           { label: 'Pending', value: stats.pendingCount, icon: AlertCircle, color: 'text-amber-400' },
-          { label: 'Processing', value: stats.processingCount, icon: CreditCard, color: 'text-blue-400' },
+          { label: 'Processing', value: stats.processingCount, icon: CreditCard, color: 'text-green-400' },
         ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-[#111827] p-5">
+          <div key={label} className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-[#111111] p-5">
             <div>
               <p className="text-xs text-slate-500">{label}</p>
               <p className="mt-1 text-2xl font-bold text-white">{value}</p>
@@ -148,7 +148,7 @@ export function SalaryPage() {
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111827] overflow-hidden">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
         <div className="flex flex-col gap-3 border-b border-white/[0.06] p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold text-white">{isTeacher ? 'Payment History' : 'Payroll Records'}</h2>
@@ -157,7 +157,7 @@ export function SalaryPage() {
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name, role, or status…"
-              className="w-56 rounded-xl border border-white/[0.08] bg-white/[0.04] pl-9 pr-3 py-2 text-sm text-white outline-none focus:border-teal-500/50 placeholder:text-slate-600" />
+              className="w-56 rounded-xl border border-white/[0.08] bg-white/[0.04] pl-9 pr-3 py-2 text-sm text-white outline-none focus:border-green-500/50 placeholder:text-slate-600" />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -184,7 +184,7 @@ export function SalaryPage() {
                 <tr key={s._id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
                   <td className="px-4 py-3 font-medium text-slate-200">{s.employeeName}</td>
                   <td className="px-4 py-3 capitalize text-slate-400">{s.role}</td>
-                  <td className="px-4 py-3 font-semibold text-teal-400">${s.amount.toLocaleString()}</td>
+                  <td className="px-4 py-3 font-semibold text-green-400">${s.amount.toLocaleString()}</td>
                   <td className="px-4 py-3 text-slate-400">{new Date(s.paymentDate).toLocaleDateString()}</td>
                   <td className="px-4 py-3">{statusBadge(s.status)}</td>
                   <td className="px-4 py-3 text-slate-500">{s.note || '—'}</td>
@@ -231,7 +231,7 @@ export function SalaryPage() {
           </div>
           <div className="mt-5 flex justify-end gap-3">
             <button type="button" onClick={() => { setCreateOpen(false); resetForm() }} className="rounded-xl border border-white/[0.08] px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
-            <button type="submit" disabled={saving} className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">{saving ? 'Saving…' : 'Save Record'}</button>
+            <button type="submit" disabled={saving} className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">{saving ? 'Saving…' : 'Save Record'}</button>
           </div>
         </form>
       </Modal>

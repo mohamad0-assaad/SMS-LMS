@@ -37,9 +37,9 @@ export function StudentResourcesPage() {
           <li key={item.title}>
             <Link
               to={item.to}
-              className="flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-[#111827] p-5 shadow-lg transition hover:border-teal-500/30"
+              className="flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-5 shadow-lg transition hover:border-green-500/30"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-500/10 text-green-400">
                 <item.icon className="h-5 w-5" />
               </span>
               <span>

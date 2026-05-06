@@ -24,6 +24,7 @@ import { StudentSkillInsightPage } from './data/StudentSkillInsightPage'
 import { StudentTimetablePage } from './data/StudentTimetablePage'
 import { SubjectsListPage } from './data/SubjectsListPage'
 import { TeacherAiExamPage } from './data/TeacherAiExamPage'
+import { TeacherStudentsPage } from './data/TeacherStudentsPage'
 import { TeacherExamDetailPage } from './data/TeacherExamDetailPage'
 import { TeacherExamsPage } from './data/TeacherExamsPage'
 import { TeacherResourcesPage } from './data/TeacherResourcesPage'
@@ -83,7 +84,8 @@ export function AppSection() {
 
   if (role === 'teacher') {
     if (a === 'students' && b && c === 'skill') return <StudentSkillInsightPage />
-    if (a === 'students') return <UsersListPage title="Students" filterRole="student" />
+    if (a === 'students') return <TeacherStudentsPage />
+    if (a === 'subjects') return <SubjectsListPage />
     if (a === 'classes') return <ClassesListPage />
     if (a === 'exams' && b) return <TeacherExamDetailPage />
     if (a === 'exams') return <TeacherExamsPage />

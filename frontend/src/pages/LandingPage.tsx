@@ -40,21 +40,21 @@ const roles = [
     title: 'Students',
     desc: 'Track your classes, take AI-generated exams, view results and get personalized coaching.',
     img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80',
-    color: 'from-teal-500/20',
+    color: 'from-green-500/20',
   },
   {
     icon: LayoutDashboard,
     title: 'Teachers',
     desc: 'Manage classes, generate AI exams with Gemini, publish assessments, and track at-risk students.',
     img: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80',
-    color: 'from-violet-500/20',
+    color: 'from-green-600/20',
   },
   {
     icon: Shield,
     title: 'Administrators',
     desc: 'Full school-wide control — users, classes, subjects, timetables, and AI-powered insights.',
     img: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80',
-    color: 'from-blue-500/20',
+    color: 'from-emerald-500/20',
   },
 ]
 
@@ -67,27 +67,27 @@ const stats = [
 
 export function LandingPage() {
   return (
-    <div className="min-h-svh bg-[#080e1a] font-sans text-slate-100">
+    <div className="min-h-svh bg-[#080808] font-sans text-slate-100">
 
       {/* Navbar */}
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#080e1a]/90 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#080808]/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-violet-600 shadow-lg shadow-teal-900/40">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-green-600 to-emerald-500 shadow-lg shadow-green-900/40">
               <GraduationCap className="h-5 w-5 text-white" strokeWidth={2} />
             </span>
             SkillUp
           </Link>
           <nav className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-            <a href="#features" className="transition hover:text-teal-400">Features</a>
-            <a href="#roles"    className="transition hover:text-teal-400">Portals</a>
-            <a href="#adaptive" className="transition hover:text-teal-400">AI Powered</a>
+            <a href="#features" className="transition hover:text-green-400">Features</a>
+            <a href="#roles"    className="transition hover:text-green-400">Portals</a>
+            <a href="#adaptive" className="transition hover:text-green-400">AI Powered</a>
           </nav>
           <div className="flex items-center gap-2">
             <Link to="/login" className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/[0.06] hover:text-white">
               Sign in
             </Link>
-            <Link to="/login" className="rounded-xl bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-900/40 transition hover:bg-teal-400">
+            <Link to="/login" className="rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-green-900/40 transition hover:bg-green-600">
               Get started
             </Link>
           </div>
@@ -102,18 +102,18 @@ export function LandingPage() {
             alt=""
             className="h-full w-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#080e1a] via-[#080e1a]/90 to-[#080e1a]/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080e1a] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/90 to-[#080808]/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-transparent" />
         </div>
         <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-semibold text-teal-400">
+            <span className="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-400">
               <Sparkles className="h-3.5 w-3.5" />
               AI-Powered School Management
             </span>
             <h1 className="mt-5 text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
               One platform for{' '}
-              <span className="bg-gradient-to-r from-teal-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                 SIS, LMS
               </span>{' '}
               &amp; smarter teaching
@@ -125,7 +125,7 @@ export function LandingPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 rounded-xl bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-xl shadow-teal-900/40 transition hover:bg-teal-400"
+                className="inline-flex items-center gap-2 rounded-xl bg-green-700 px-6 py-3 text-sm font-semibold text-white shadow-xl shadow-green-900/40 transition hover:bg-green-600"
               >
                 Get started free <ArrowRight className="h-4 w-4" />
               </Link>
@@ -141,7 +141,7 @@ export function LandingPage() {
       </section>
 
       {/* Stats bar */}
-      <div className="border-y border-white/[0.06] bg-[#0d1525]">
+      <div className="border-y border-white/[0.06] bg-[#0a0a0a]">
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-white/[0.06] px-4 sm:px-6 lg:grid-cols-4">
           {stats.map((s) => (
             <div key={s.label} className="px-6 py-8 text-center">
@@ -164,9 +164,9 @@ export function LandingPage() {
           {features.map((f) => (
             <article
               key={f.title}
-              className="group rounded-2xl border border-white/[0.06] bg-[#111827] p-6 shadow-lg transition hover:border-teal-500/30 hover:shadow-teal-900/20"
+              className="group rounded-2xl border border-white/[0.06] bg-[#111111] p-6 shadow-lg transition hover:border-green-500/30 hover:shadow-green-900/20"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 ring-1 ring-teal-500/20 transition group-hover:bg-teal-500/20">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-500/10 text-green-400 ring-1 ring-green-500/20 transition group-hover:bg-green-500/20">
                 <f.icon className="h-5 w-5" strokeWidth={2} />
               </div>
               <h3 className="mt-4 font-semibold text-white">{f.title}</h3>
@@ -177,7 +177,7 @@ export function LandingPage() {
       </section>
 
       {/* Roles with photos */}
-      <section id="roles" className="bg-[#0d1525] py-24">
+      <section id="roles" className="bg-[#0a0a0a] py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white">The right view for every role</h2>
@@ -189,7 +189,7 @@ export function LandingPage() {
             {roles.map((r) => (
               <div
                 key={r.title}
-                className="group overflow-hidden rounded-2xl border border-white/[0.06] bg-[#111827] shadow-lg transition hover:border-teal-500/20 hover:shadow-xl"
+                className="group overflow-hidden rounded-2xl border border-white/[0.06] bg-[#111111] shadow-lg transition hover:border-green-500/20 hover:shadow-xl"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -197,12 +197,12 @@ export function LandingPage() {
                     alt={r.title}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${r.color} to-[#111827] via-transparent`} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#111827]/80 to-transparent" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${r.color} to-[#111111] via-transparent`} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/80 to-transparent" />
                 </div>
                 <div className="p-6">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                    <r.icon className="h-5 w-5 text-teal-400" strokeWidth={1.8} />
+                    <r.icon className="h-5 w-5 text-green-400" strokeWidth={1.8} />
                   </div>
                   <h3 className="mt-3 text-lg font-semibold text-white">{r.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">{r.desc}</p>
@@ -221,10 +221,10 @@ export function LandingPage() {
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0e1f]/98 via-[#0a0e1f]/90 to-[#0a0e1f]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#080808]/98 via-[#080808]/90 to-[#080808]/70" />
           <div className="relative px-10 py-16 sm:px-14">
             <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-xs font-semibold text-violet-400">
+              <span className="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-400">
                 <Sparkles className="h-3.5 w-3.5" /> Powered by Gemini AI
               </span>
               <h2 className="mt-4 text-3xl font-bold text-white">Adaptive learning, visible in the UI</h2>
@@ -232,13 +232,13 @@ export function LandingPage() {
                 Generate exams in seconds, surface at-risk alerts, and get AI class insights — all connected to Google Gemini.
               </p>
               <ul className="mt-6 space-y-3 text-sm text-slate-300">
-                <li className="flex items-center gap-2"><span className="text-teal-400">→</span> AI exam generator — pick topic, Gemini writes the questions</li>
-                <li className="flex items-center gap-2"><span className="text-teal-400">→</span> Student AI coach — personalized chat for every learner</li>
-                <li className="flex items-center gap-2"><span className="text-teal-400">→</span> Class insights — topic heatmaps and at-risk detection</li>
+                <li className="flex items-center gap-2"><span className="text-green-400">→</span> AI exam generator — pick topic, Gemini writes the questions</li>
+                <li className="flex items-center gap-2"><span className="text-green-400">→</span> Student AI coach — personalized chat for every learner</li>
+                <li className="flex items-center gap-2"><span className="text-green-400">→</span> Class insights — topic heatmaps and at-risk detection</li>
               </ul>
               <Link
                 to="/login"
-                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-900/40 transition hover:bg-teal-400"
+                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-green-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-900/40 transition hover:bg-green-600"
               >
                 Open SkillUp <ArrowRight className="h-4 w-4" />
               </Link>
@@ -248,15 +248,15 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] bg-[#080e1a] py-10">
+      <footer className="border-t border-white/[0.06] bg-[#080808] py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-center text-sm text-slate-600 sm:flex-row sm:text-left sm:px-6">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-violet-600">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-green-600 to-emerald-500">
               <GraduationCap className="h-4 w-4 text-white" strokeWidth={2} />
             </span>
             <span className="text-slate-400">© {new Date().getFullYear()} SkillUp LMS</span>
           </div>
-          <Link to="/login" className="font-medium text-teal-500 hover:underline">
+          <Link to="/login" className="font-medium text-green-500 hover:underline">
             Sign in to dashboard →
           </Link>
         </div>

@@ -32,7 +32,7 @@ export function StudentResultsPage() {
       ) : !rows.length ? (
         <p className="text-sm text-slate-500">No graded submissions yet.</p>
       ) : (
-        <ul className="divide-y divide-white/[0.06] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111827] shadow-lg">
+        <ul className="divide-y divide-white/[0.06] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] shadow-lg">
           {rows.map((r) => {
             const pct = r.maxScore > 0 ? Math.round((r.score / r.maxScore) * 1000) / 10 : 0
             return (
@@ -45,7 +45,7 @@ export function StudentResultsPage() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-white">{r.score} / {r.maxScore}</p>
-                  <p className={`text-xs font-medium ${pct >= 80 ? 'text-teal-400' : pct >= 60 ? 'text-amber-400' : 'text-rose-400'}`}>{pct}%</p>
+                  <p className={`text-xs font-medium ${pct >= 80 ? 'text-green-400' : pct >= 60 ? 'text-amber-400' : 'text-rose-400'}`}>{pct}%</p>
                 </div>
               </li>
             )

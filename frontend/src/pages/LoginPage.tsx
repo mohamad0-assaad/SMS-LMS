@@ -63,8 +63,8 @@ export function LoginPage() {
             alt="Modern classroom"
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#080e1a]/80 to-[#080e1a]/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080e1a] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#080808]/80 to-[#080808]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-transparent" />
           <div className="absolute bottom-12 left-10 max-w-sm">
             <p className="text-2xl font-bold text-white leading-snug">
               "Elevate every classroom with data-driven insights."
@@ -75,11 +75,11 @@ export function LoginPage() {
       </div>
 
       {/* Right — form panel */}
-      <div className="flex flex-1 flex-col items-center justify-center bg-[#080e1a] px-6 py-12">
+      <div className="flex flex-1 flex-col items-center justify-center bg-[#080808] px-6 py-12">
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 flex flex-col items-center text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-violet-600 shadow-xl shadow-teal-900/40">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-600 to-emerald-500 shadow-xl shadow-green-900/40">
               <GraduationCap className="h-7 w-7 text-white" strokeWidth={2} />
             </div>
             <h1 className="mt-4 text-2xl font-bold tracking-tight text-white">SkillUp LMS</h1>
@@ -87,7 +87,7 @@ export function LoginPage() {
           </div>
 
           {/* Card */}
-          <div className="rounded-2xl border border-white/[0.08] bg-[#111827] p-8 shadow-2xl">
+          <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-8 shadow-2xl">
             <h2 className="mb-5 text-base font-semibold text-white">Sign in to your account</h2>
             <form onSubmit={handleApiSignIn} className="space-y-4">
               {error && (
@@ -104,7 +104,7 @@ export function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@school.edu"
-                  className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-teal-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-teal-500/20"
+                  className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-green-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-green-500/20"
                 />
               </div>
               <div>
@@ -116,13 +116,13 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-teal-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-teal-500/20"
+                  className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-green-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-green-500/20"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-violet-600 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-900/30 transition enabled:hover:from-teal-400 enabled:hover:to-violet-500 disabled:opacity-60"
+                className="w-full rounded-xl bg-green-700 py-3 text-sm font-semibold text-white shadow-lg shadow-green-900/30 transition enabled:hover:bg-green-600 disabled:opacity-60"
               >
                 {loading ? 'Signing in…' : 'Sign in'}
               </button>
@@ -151,7 +151,7 @@ export function LoginPage() {
                       else if (r === 'admin') setDisplayName('Admin User')
                       else setDisplayName('Parent User')
                     }}
-                    className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-4 py-2.5 text-sm text-white outline-none focus:border-teal-500/50 focus:ring-2 focus:ring-teal-500/20"
+                    className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#111111] px-4 py-2.5 text-sm text-white outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20"
                   >
                     {roles.map((r) => (
                       <option key={r} value={r}>{ROLE_LABELS[r]}</option>
@@ -165,7 +165,7 @@ export function LoginPage() {
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#0d1525] px-4 py-2.5 text-sm text-white outline-none focus:border-teal-500/50 focus:ring-2 focus:ring-teal-500/20"
+                    className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#111111] px-4 py-2.5 text-sm text-white outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20"
                   />
                 </div>
                 <button
