@@ -29,6 +29,7 @@ import salaryRouter from "./routes/salary.ts";
 import reportCardRouter from "./routes/reportcard.ts";
 import materialRouter from "./routes/material.ts";
 import searchRouter from "./routes/search.ts";
+import messageRouter from "./routes/message.ts";
 
 dotenv.config();
 
@@ -77,6 +78,7 @@ app.use("/api/salary", salaryRouter);
 app.use("/api/report-cards", reportCardRouter);
 app.use("/api/materials", materialRouter);
 app.use("/api/search", searchRouter);
+app.use("/api/messages", messageRouter);
 
 app.use((err: Error, _req: Request, res: Response, _next: Function) => {
   console.error(err.stack);

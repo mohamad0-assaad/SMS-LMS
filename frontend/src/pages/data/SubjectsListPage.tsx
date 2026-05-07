@@ -158,8 +158,8 @@ export function SubjectsListPage() {
   function load() {
     setLoading(true)
     Promise.all([
-      getJson<SubjectsRes>('/api/subjects?page=1&limit=200'),
-      getJson<ClassesRes>('/api/classes?page=1&limit=200'),
+      getJson<SubjectsRes>('/api/subjects?page=1&limit=200', 30_000),
+      getJson<ClassesRes>('/api/classes?page=1&limit=200', 30_000),
     ])
       .then(([sd, cd]) => {
         setRows(sd.subjects ?? [])

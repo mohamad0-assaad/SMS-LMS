@@ -3,10 +3,12 @@ import {
   triggerExamGeneration,
   getExams,
   getMyExamResults,
+  getChildExamResults,
   submitExam,
   getExamById,
   toggleExamStatus,
   getExamResult,
+  deleteExam,
 } from "../controllers/exam.ts";
 import { protect, authorize } from "../middleware/auth.ts";
 
@@ -25,6 +27,13 @@ examRouter.get(
   protect,
   authorize(["student"]),
   getMyExamResults
+);
+
+examRouter.get(
+  "/child/:id/results",
+  protect,
+  authorize(["parent"]),
+  getChildExamResults
 );
 
 examRouter.get(
@@ -63,6 +72,13 @@ examRouter.get(
   protect,
   authorize(["teacher", "student", "admin"]),
   getExamById
+);
+
+examRouter.delete(
+  "/:id",
+  protect,
+  authorize(["teacher", "admin"]),
+  deleteExam
 );
 
 export default examRouter;

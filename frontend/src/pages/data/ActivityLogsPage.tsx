@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getJson } from '../../lib/api'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type LogRow = {
   _id: string
@@ -25,7 +26,7 @@ export function ActivityLogsPage() {
     let cancelled = false
     setLoading(true)
     setErr(null)
-    getJson<LogsResponse>('/api/activities?page=1&limit=30')
+    getJson<LogsResponse>('/api/activities?page=1&limit=30', 30_000)
       .then((d) => {
         if (!cancelled) setData(d)
       })
@@ -50,7 +51,7 @@ export function ActivityLogsPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-400">Loading…</p>
+        <SkeletonTable rows={5} />
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">
           {err}

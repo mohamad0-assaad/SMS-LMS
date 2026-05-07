@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiFetch, getJson, getProfile, postJson } from '../../lib/api'
 import { ClipboardList, Plus, Trash2 } from 'lucide-react'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type Assignment = { _id: string; title: string; description: string; dueDate: string; subject?: { name: string }; class?: { name: string }; teacher?: { name: string } }
 type SubjectOption = { _id: string; name: string }
@@ -19,7 +20,7 @@ export function AssignmentsPage() {
 
   function load() {
     setLoading(true)
-    getJson<{ assignments: Assignment[] }>('/api/assignments')
+    getJson<{ assignments: Assignment[] }>('/api/assignments', 30_000)
       .then((d) => setAssignments(d.assignments ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -106,7 +107,7 @@ export function AssignmentsPage() {
         </form>
       )}
 
-      {loading ? <p className="text-sm text-slate-500">Loading…</p> : !assignments.length ? (
+      {loading ? <SkeletonTable rows={5} /> : !assignments.length ? (
         <div className="flex flex-col items-center gap-3 py-16 text-slate-500">
           <ClipboardList className="h-10 w-10 opacity-30" />
           <p className="text-sm">No assignments yet</p>

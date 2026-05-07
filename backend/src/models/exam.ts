@@ -42,4 +42,7 @@ const examSchema = new Schema(
   { timestamps: true }
 );
 
+examSchema.index({ class: 1, isActive: 1 });
+examSchema.index({ teacher: 1 });
+
 export default mongoose.model<IExam>("Exam", examSchema);

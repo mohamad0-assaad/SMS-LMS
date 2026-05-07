@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getJson, getProfile, postJson } from '../../lib/api'
 import { FileText, Sparkles } from 'lucide-react'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type SubjectResult = { subjectName: string; score: number; grade: string; remarks: string }
 type ReportCard = { _id: string; term: string; averageScore: number; attendance: number; teacherComment: string; results: SubjectResult[]; generatedAt: string; student?: { name: string } }
@@ -36,7 +37,7 @@ export function ReportCardPage() {
         })
       }
     })
-    getJson<ReportCard[]>('/api/report-cards')
+    getJson<ReportCard[]>('/api/report-cards', 30_000)
       .then(setReports)
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -45,7 +46,7 @@ export function ReportCardPage() {
   useEffect(() => {
     if (!selectedClass || role === 'student') return
     setLoading(true)
-    getJson<ReportCard[]>(`/api/report-cards/class/${selectedClass}?term=${encodeURIComponent(term)}`)
+    getJson<ReportCard[]>(`/api/report-cards/class/${selectedClass}?term=${encodeURIComponent(term)}`, 30_000)
       .then(setReports)
       .catch(() => setReports([]))
       .finally(() => setLoading(false))
@@ -57,7 +58,7 @@ export function ReportCardPage() {
     try {
       const d = await postJson<{ message: string }>('/api/report-cards/generate', { classId: selectedClass, term })
       setMsg(d.message)
-      getJson<ReportCard[]>(`/api/report-cards/class/${selectedClass}?term=${encodeURIComponent(term)}`).then(setReports).catch(() => {})
+      getJson<ReportCard[]>(`/api/report-cards/class/${selectedClass}?term=${encodeURIComponent(term)}`, 30_000).then(setReports).catch(() => {})
     } catch (ex: any) { setErr(ex.message) }
     finally { setGenerating(false) }
   }
@@ -83,7 +84,7 @@ export function ReportCardPage() {
       {err && <p className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</p>}
       {msg && <p className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">{msg}</p>}
 
-      {loading ? <p className="text-sm text-slate-500">Loading…</p> : !reports.length ? (
+      {loading ? <SkeletonTable rows={5} /> : !reports.length ? (
         <div className="flex flex-col items-center gap-3 py-16 text-slate-500"><FileText className="h-10 w-10 opacity-30" /><p className="text-sm">No report cards yet{role !== 'student' ? '. Generate one above.' : '.'}</p></div>
       ) : (
         <div className="space-y-4">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getJson } from '../../lib/api'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type YearRow = { _id: string; name: string; startDate?: string; endDate?: string }
 type YearsRes = { years?: YearRow[] }
@@ -12,7 +13,7 @@ export function AcademicYearsPage() {
   useEffect(() => {
     let c = false
     setLoading(true)
-    getJson<YearsRes>('/api/academic-years?page=1&limit=100')
+    getJson<YearsRes>('/api/academic-years?page=1&limit=100', 30_000)
       .then((d) => {
         if (!c) setRows(d.years ?? [])
       })
@@ -34,7 +35,7 @@ export function AcademicYearsPage() {
         <p className="text-sm text-slate-500">Admin-only API</p>
       </div>
       {loading ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <SkeletonTable rows={5} />
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !rows.length ? (

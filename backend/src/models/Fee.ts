@@ -36,4 +36,7 @@ const feeSchema = new Schema<IFee>(
   { timestamps: true }
 );
 
+feeSchema.index({ student: 1 });
+feeSchema.index({ class: 1 });
+
 export default mongoose.model<IFee>("Fee", feeSchema);

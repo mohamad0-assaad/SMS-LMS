@@ -27,7 +27,17 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
   })
 }
 
-export async function getJson<T>(path: string): Promise<T> {
+const _cache = new Map<string, { data: unknown; expires: number }>()
+
+export function bustCache(path: string) {
+  _cache.delete(path)
+}
+
+export async function getJson<T>(path: string, ttl = 0): Promise<T> {
+  if (ttl > 0) {
+    const hit = _cache.get(path)
+    if (hit && hit.expires > Date.now()) return hit.data as T
+  }
   const res = await apiFetch(path)
   const body = (await res.json().catch(() => ({}))) as T & { message?: string }
   if (!res.ok) {
@@ -35,6 +45,7 @@ export async function getJson<T>(path: string): Promise<T> {
       typeof body.message === 'string' ? body.message : `Request failed (${res.status})`
     throw new Error(msg)
   }
+  if (ttl > 0) _cache.set(path, { data: body, expires: Date.now() + ttl })
   return body as T
 }
 

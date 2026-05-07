@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getJson } from '../../lib/api'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type Pop = { _id?: string; name?: string; section?: string } | string
 type ExamRow = { _id: string; title: string; isActive?: boolean; class?: Pop; subject?: Pop; questions?: unknown[]; dueDate?: string }
@@ -28,7 +29,7 @@ export function TeacherResultsPage() {
   useEffect(() => {
     let cancelled = false
     setLoading(true); setErr(null)
-    getJson<ExamRow[]>('/api/exams')
+    getJson<ExamRow[]>('/api/exams', 30_000)
       .then((rows) => { if (!cancelled) setExams(Array.isArray(rows) ? rows : []) })
       .catch((e: Error) => { if (!cancelled) setErr(e.message) })
       .finally(() => { if (!cancelled) setLoading(false) })
@@ -55,7 +56,7 @@ export function TeacherResultsPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <SkeletonTable rows={5} />
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !exams.length ? (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiFetch, getJson, postJson } from '../../lib/api'
 import { Plus, Trash2, TrendingDown } from 'lucide-react'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type Expense = { _id: string; title: string; category: string; amount: number; date: string; description?: string; createdBy?: { name: string } }
 
@@ -16,7 +17,7 @@ export function ExpensesPage() {
 
   function load() {
     setLoading(true)
-    getJson<{ expenses: Expense[] }>('/api/expenses')
+    getJson<{ expenses: Expense[] }>('/api/expenses', 30_000)
       .then((d) => setExpenses(d.expenses ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -84,7 +85,7 @@ export function ExpensesPage() {
         </form>
       )}
 
-      {loading ? <p className="text-sm text-slate-500">Loading…</p> : !expenses.length ? (
+      {loading ? <SkeletonTable rows={5} /> : !expenses.length ? (
         <div className="flex flex-col items-center gap-3 py-16 text-slate-500"><TrendingDown className="h-10 w-10 opacity-30" /><p className="text-sm">No expenses recorded</p></div>
       ) : (
         <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiFetch, getJson, getProfile } from '../../lib/api'
 import { BookOpen, Download, Trash2, Upload } from 'lucide-react'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type Material = { _id: string; title: string; description?: string; subject: string; className: string; uploadedByName: string; fileName: string; fileSize: number; fileType: string; downloadUrl: string; createdAt: string }
 type ClassOption = { _id: string; name: string }
@@ -25,7 +26,7 @@ export function MaterialsPage() {
 
   function load() {
     setLoading(true)
-    getJson<{ materials: Material[] }>('/api/materials')
+    getJson<{ materials: Material[] }>('/api/materials', 30_000)
       .then((d) => setMaterials(d.materials ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -110,7 +111,7 @@ export function MaterialsPage() {
         </form>
       )}
 
-      {loading ? <p className="text-sm text-slate-500">Loading…</p> : !materials.length ? (
+      {loading ? <SkeletonTable rows={5} /> : !materials.length ? (
         <div className="flex flex-col items-center gap-3 py-16 text-slate-500"><BookOpen className="h-10 w-10 opacity-30" /><p className="text-sm">No materials yet</p></div>
       ) : (
         <div className="space-y-3">

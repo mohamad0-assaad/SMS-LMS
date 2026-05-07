@@ -1,7 +1,8 @@
-import { ClipboardList, Sparkles } from 'lucide-react'
+import { ClipboardList, Sparkles, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { apiFetch } from '../../lib/api'
+import { apiFetch, bustCache } from '../../lib/api'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type Pop = { name?: string } | string
 type ExamRow = { _id: string; title: string; duration?: number; dueDate?: string; isActive?: boolean; questions?: unknown[]; subject?: Pop; class?: Pop }
@@ -20,6 +21,7 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
   const [exams, setExams] = useState<ExamRow[]>([])
   const [err, setErr] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
     let c = false
@@ -36,6 +38,24 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
     return () => { c = true }
   }, [])
 
+  async function handleDelete(id: string, title: string) {
+    if (!window.confirm(`Delete "${title}"? This also removes all student submissions.`)) return
+    setDeleting(id)
+    try {
+      const res = await apiFetch(`/api/exams/${id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error((d as { message?: string }).message ?? 'Delete failed')
+      }
+      setExams((prev) => prev.filter((e) => e._id !== id))
+      bustCache('/api/exams')
+    } catch (e: any) {
+      alert(e.message)
+    } finally {
+      setDeleting(null)
+    }
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -49,7 +69,7 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <SkeletonTable rows={5} />
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !exams.length ? (
@@ -67,7 +87,7 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
             const qCount = Array.isArray(ex.questions) ? ex.questions.length : 0
             const draft = !ex.isActive || qCount === 0
             return (
-              <li key={ex._id}>
+              <li key={ex._id} className="group relative">
                 <Link to={`${base}/exams/${ex._id}`}
                   className="flex h-full flex-col rounded-xl border border-white/[0.08] bg-[#111111] p-5 shadow-lg transition hover:border-green-500/30">
                   <div className="flex items-start justify-between gap-2">
@@ -83,6 +103,15 @@ export function TeacherExamsPage({ title = 'Your exams', description = 'Drafts a
                     {ex.dueDate ? ` · due ${new Date(ex.dueDate).toLocaleDateString()}` : ''}
                   </p>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(ex._id, ex.title)}
+                  disabled={deleting === ex._id}
+                  title="Delete exam"
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/10 text-rose-400 opacity-0 transition hover:bg-rose-500/20 group-hover:opacity-100 disabled:opacity-50"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
               </li>
             )
           })}

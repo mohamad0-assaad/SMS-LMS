@@ -99,6 +99,51 @@ export const getClassAttendanceHistory = async (req: AuthRequest, res: Response)
   }
 };
 
+// @desc    Get a specific child's attendance (for parent)
+// @route   GET /api/attendance/child/:id
+// @access  Private/Parent
+export const getChildAttendance = async (req: AuthRequest, res: Response) => {
+  try {
+    const parent = req.user!;
+    const childId = req.params.id;
+
+    // Verify this student is actually linked to the parent
+    const parentDoc = await (await import("../models/user.ts")).default
+      .findById(parent._id)
+      .select("children")
+      .lean();
+    const childIds = ((parentDoc as any)?.children ?? []).map(String);
+    if (!childIds.includes(childId)) {
+      return res.status(403).json({ message: "This student is not linked to your account" });
+    }
+
+    const records = await Attendance.find({ student: childId })
+      .populate("class", "name")
+      .sort({ date: -1 })
+      .lean();
+
+    const total = records.length;
+    const present = records.filter((r) => r.status === "present").length;
+    const absent = records.filter((r) => r.status === "absent").length;
+    const late = records.filter((r) => r.status === "late").length;
+    const attended = present + late;
+
+    res.json({
+      total, present, absent, late,
+      percentage: total ? Math.round((attended / total) * 100) : 0,
+      history: records.map((r) => ({
+        _id: r._id,
+        className: (r.class as any)?.name || "Unknown",
+        date: r.date.toISOString().slice(0, 10),
+        status: r.status,
+        remark: r.remark || "",
+      })),
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || "Failed to load attendance" });
+  }
+};
+
 export const getMyAttendance = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user!;

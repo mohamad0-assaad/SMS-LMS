@@ -21,28 +21,6 @@ type QuizResult = {
   warning?: string
 }
 
-type SkillupResult = {
-  failure_risk?: number
-  recommended_topic?: string
-  study_strategy?: string
-}
-
-const SKILLUP_SAMPLE: Record<string, number> = {
-  exam_score: 72,
-  quiz_score: 68,
-  assignment_score: 75,
-  attendance_rate: 85,
-  quiz_attempts: 4,
-  study_time_hours: 12,
-  login_frequency: 20,
-  course_progress: 60,
-  topic_variables: 1,
-  topic_loops: 0,
-  topic_functions: 1,
-  topic_oop: 0,
-  topic_recursion: 0,
-  topic_datastructures: 1,
-}
 
 function FormattedText({ text }: { text: string }) {
   const blocks = text.split(/\n\n+/)
@@ -154,9 +132,6 @@ export function AiClassInsightsPage() {
   const [quizErr, setQuizErr] = useState<string | null>(null)
   const [quizExpanded, setQuizExpanded] = useState(true)
 
-  const [skillupBusy, setSkillupBusy] = useState(false)
-  const [skillupResult, setSkillupResult] = useState<SkillupResult | null>(null)
-  const [skillupErr, setSkillupErr] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -228,25 +203,6 @@ export function AiClassInsightsPage() {
       setQuizBusy(false)
     }
   }
-
-  async function doSkillup() {
-    setSkillupBusy(true)
-    setSkillupErr(null)
-    setSkillupResult(null)
-    try {
-      const data = await postJson<SkillupResult>('/api/skillup/predict', SKILLUP_SAMPLE)
-      setSkillupResult(data)
-    } catch (e) {
-      setSkillupErr(e instanceof Error ? e.message : 'Request failed')
-    } finally {
-      setSkillupBusy(false)
-    }
-  }
-
-  const riskPercent =
-    skillupResult?.failure_risk != null
-      ? Math.round(Number(skillupResult.failure_risk) * 100)
-      : null
 
   const inputCls = 'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20'
   const labelCls = 'block text-xs font-medium text-slate-400 mb-1'
@@ -444,65 +400,6 @@ export function AiClassInsightsPage() {
         )}
       </section>
 
-      {/* SkillUp ML */}
-      <section className="space-y-4 rounded-2xl border border-green-500/20 bg-green-500/[0.06] p-5 shadow-lg">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
-            <Brain className="h-4 w-4" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-white">SkillUp ML · Failure Risk</h2>
-            <p className="text-xs text-slate-500">
-              Requires the Python service running on port 8000
-            </p>
-          </div>
-        </div>
-        <p className="rounded-lg bg-black/40 px-3 py-2 text-xs text-slate-300 font-mono">
-          cd skillup-ai &amp;&amp; python -m uvicorn main:app --host 127.0.0.1 --port 8000
-        </p>
-        <button
-          type="button"
-          disabled={skillupBusy}
-          onClick={() => void doSkillup()}
-          className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-60"
-        >
-          {skillupBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          Run sample prediction
-        </button>
-        {skillupErr && <SectionError msg={skillupErr} />}
-        {skillupResult && (
-          <div className="grid gap-3 sm:grid-cols-3">
-            {riskPercent != null && (
-              <div className={`rounded-xl border p-4 text-center ${
-                riskPercent >= 60 ? 'border-rose-500/20 bg-rose-500/10' :
-                riskPercent >= 35 ? 'border-amber-500/20 bg-amber-500/10' :
-                'border-emerald-500/20 bg-emerald-500/10'
-              }`}>
-                <p className="text-xs font-medium text-slate-500 mb-1">Failure Risk</p>
-                <p className={`text-3xl font-bold ${
-                  riskPercent >= 60 ? 'text-rose-400' :
-                  riskPercent >= 35 ? 'text-amber-400' :
-                  'text-emerald-400'
-                }`}>
-                  {riskPercent}%
-                </p>
-              </div>
-            )}
-            {skillupResult.recommended_topic && (
-              <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-center">
-                <p className="text-xs font-medium text-slate-500 mb-1">Recommended Topic</p>
-                <p className="text-sm font-semibold text-green-300">{skillupResult.recommended_topic}</p>
-              </div>
-            )}
-            {skillupResult.study_strategy && (
-              <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-center">
-                <p className="text-xs font-medium text-slate-500 mb-1">Study Strategy</p>
-                <p className="text-sm font-semibold text-green-300">{skillupResult.study_strategy}</p>
-              </div>
-            )}
-          </div>
-        )}
-      </section>
     </div>
   )
 }

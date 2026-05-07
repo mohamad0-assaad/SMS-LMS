@@ -30,6 +30,10 @@ import { TeacherExamsPage } from './data/TeacherExamsPage'
 import { TeacherResourcesPage } from './data/TeacherResourcesPage'
 import { TeacherResultsPage } from './data/TeacherResultsPage'
 import { UsersListPage } from './data/UsersListPage'
+import { ParentChildDataPage } from './data/ParentChildDataPage'
+import { ParentMessagesPage } from './data/ParentMessagesPage'
+import { TeacherMessagesPage } from './data/TeacherMessagesPage'
+import { TeacherTimetablePage } from './data/TeacherTimetablePage'
 import { SectionPlaceholder } from './SectionPlaceholder'
 
 function segments(role: string, pathname: string): string[] {
@@ -99,6 +103,17 @@ export function AppSection() {
     if (a === 'ai' && b === 'exam') return <TeacherAiExamPage />
     if (a === 'ai-insights') return <AiClassInsightsPage />
     if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
+    if (a === 'messages') return <TeacherMessagesPage />
+    if (a === 'timetable') return <TeacherTimetablePage />
+  }
+
+  if (role === 'parent') {
+    if (a === 'attendance') return <ParentChildDataPage defaultTab="attendance" />
+    if (a === 'exams-results') return <ParentChildDataPage defaultTab="results" />
+    if (a === 'timetable') return <ParentChildDataPage defaultTab="timetable" />
+    if (a === 'children') return <ParentChildDataPage defaultTab="attendance" />
+    if (a === 'messages') return <ParentMessagesPage />
+    if (a === 'ai-insights') return <AiClassInsightsPage />
   }
 
   if (role === 'student') {

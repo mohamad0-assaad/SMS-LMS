@@ -53,7 +53,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { label: 'Classes', path: '/classes', roles: ['admin', 'teacher'] },
       { label: 'Subjects', path: '/subjects', roles: ['admin', 'teacher'] },
-      { label: 'Timetable', path: '/timetable', roles: ['admin', 'student', 'parent'] },
+      { label: 'Timetable', path: '/timetable', roles: ['admin', 'student', 'parent', 'teacher'] },
       { label: 'Attendance', path: '/attendance' },
     ],
   },
@@ -100,6 +100,7 @@ const GROUPS: NavGroup[] = [
       { label: 'Report Cards', path: '/report-cards', roles: ['admin', 'teacher', 'student'] },
       { label: 'AI Insights', path: '/ai-insights', roles: ['admin', 'teacher', 'parent'] },
       { label: 'Teacher Messages', path: '/messages', roles: ['parent'] },
+      { label: 'Messages', path: '/messages', roles: ['teacher'] },
     ],
   },
   {

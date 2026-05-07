@@ -2,6 +2,7 @@ import { BookOpen, Calendar, Clock } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getJson } from '../../lib/api'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type Pop = { name?: string } | string
 
@@ -30,7 +31,7 @@ export function StudentExamsPage() {
   useEffect(() => {
     let c = false
     setLoading(true)
-    getJson<ExamRow[]>('/api/exams')
+    getJson<ExamRow[]>('/api/exams', 20_000)
       .then((rows) => {
         if (!c) setExams(Array.isArray(rows) ? rows : [])
       })
@@ -51,7 +52,7 @@ export function StudentExamsPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <SkeletonTable rows={4} />
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">
           {err}

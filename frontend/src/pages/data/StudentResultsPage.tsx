@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getJson } from '../../lib/api'
+import { SkeletonTable } from '../../components/ui/Skeleton'
 
 type ResultRow = { _id: string; score: number; maxScore: number; submittedAt?: string; examTitle: string; examDue?: string }
 
@@ -11,7 +12,7 @@ export function StudentResultsPage() {
   useEffect(() => {
     let c = false
     setLoading(true)
-    getJson<ResultRow[]>('/api/exams/my-results')
+    getJson<ResultRow[]>('/api/exams/my-results', 30_000)
       .then((r) => { if (!c) setRows(Array.isArray(r) ? r : []) })
       .catch((e: Error) => { if (!c) setErr(e.message) })
       .finally(() => { if (!c) setLoading(false) })
@@ -26,7 +27,7 @@ export function StudentResultsPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <SkeletonTable rows={5} />
       ) : err ? (
         <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
       ) : !rows.length ? (

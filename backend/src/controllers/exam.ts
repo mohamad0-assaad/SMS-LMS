@@ -6,7 +6,9 @@ import Class from "../models/class.ts";
 import Exam, { type IQuestion } from "../models/exam.ts";
 import Subject from "../models/subject.ts";
 import Submission from "../models/submission.ts";
+import User from "../models/user.ts";
 import { getGeminiModel } from "../config/geminiModel.ts";
+import type { AuthRequest } from "../middleware/auth.ts";
 
 function parseQuestionsArray(text: string): unknown[] {
   const stripped = text.replace(/```json/gi, "").replace(/```/g, "").trim();
@@ -155,6 +157,50 @@ export const getMyExamResults = async (req: Request, res: Response) => {
         submittedAt: s.submittedAt,
         examTitle: ex?.title ?? "Exam",
         examDue: ex?.dueDate,
+      };
+    });
+
+    res.json(rows);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    List a child's exam results for a parent
+// @route   GET /api/exams/child/:id/results
+// @access  Private/Parent
+export const getChildExamResults = async (req: AuthRequest, res: Response) => {
+  try {
+    const parent = req.user!;
+    const childId = req.params.id;
+
+    const parentDoc = await User.findById(parent._id).select("children").lean();
+    const childIds = ((parentDoc as any)?.children ?? []).map(String);
+    if (!childIds.includes(childId)) {
+      return res.status(403).json({ message: "This student is not linked to your account" });
+    }
+
+    const subs = await Submission.find({ student: childId })
+      .populate({ path: "exam", select: "title dueDate questions subject", populate: { path: "subject", select: "name" } })
+      .sort({ submittedAt: -1 })
+      .limit(40)
+      .lean();
+
+    const rows = subs.map((s) => {
+      const ex = s.exam as { title?: string; dueDate?: Date; questions?: { points?: number }[]; subject?: { name?: string } | string } | null;
+      const maxScore = Array.isArray(ex?.questions)
+        ? ex!.questions!.reduce((sum, q) => sum + (q.points ?? 1), 0)
+        : 0;
+      const subjectName = ex?.subject && typeof ex.subject === "object" ? (ex.subject as any).name : null;
+      return {
+        _id: s._id,
+        score: s.score,
+        maxScore,
+        percentage: maxScore > 0 ? Math.round((s.score / maxScore) * 100) : 0,
+        submittedAt: s.submittedAt,
+        examTitle: ex?.title ?? "Exam",
+        examDue: ex?.dueDate,
+        subject: subjectName,
       };
     });
 
@@ -366,6 +412,29 @@ export const getExamResult = async (req: Request, res: Response) => {
     }
 
     res.json(submission);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete an exam (and its submissions)
+// @route   DELETE /api/exams/:id
+// @access  Private (Teacher owns it, or Admin)
+export const deleteExam = async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
+    const exam = await Exam.findById(req.params.id);
+    if (!exam) return res.status(404).json({ message: "Exam not found" });
+
+    if (user.role !== "admin" && exam.teacher.toString() !== user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to delete this exam" });
+    }
+
+    await Submission.deleteMany({ exam: exam._id });
+    await exam.deleteOne();
+    await logActivity({ userId: user._id, action: `Deleted exam: ${exam.title}` });
+
+    res.json({ message: "Exam deleted" });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

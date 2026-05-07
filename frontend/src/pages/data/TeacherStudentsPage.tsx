@@ -35,7 +35,7 @@ export function TeacherStudentsPage() {
   useEffect(() => {
     let cancelled = false
 
-    getJson<{ classes: ClassInfo[] }>('/api/classes?page=1&limit=100')
+    getJson<{ classes: ClassInfo[] }>('/api/classes?page=1&limit=100', 30_000)
       .then(async (d) => {
         if (cancelled) return
         const clsList = d.classes ?? []

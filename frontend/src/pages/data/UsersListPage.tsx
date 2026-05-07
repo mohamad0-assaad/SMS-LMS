@@ -259,7 +259,7 @@ export function UsersListPage({ title = 'Users', filterRole = 'all' }: UsersList
     if (fetchRole) params.set('role', fetchRole)
     setLoading(true)
     setErr(null)
-    getJson<UsersResponse>(`/api/users?${params}`)
+    getJson<UsersResponse>(`/api/users?${params}`, 30_000)
       .then((d) => setData(d))
       .catch((e: Error) => setErr(e.message))
       .finally(() => setLoading(false))

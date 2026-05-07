@@ -102,6 +102,51 @@ STRICT RULES:
 };
 
 
+// @desc    Get all periods for the logged-in teacher across all classes
+// @route   GET /api/timetables/teacher-schedule
+// @access  Private/Teacher
+export const getTeacherSchedule = async (req: Request, res: Response) => {
+  try {
+    const teacherId = String((req as any).user._id);
+
+    const allTimetables = await Timetable.find({})
+      .populate("class", "name")
+      .populate("schedule.periods.subject", "name")
+      .populate("schedule.periods.teacher", "_id name");
+
+    type PeriodEntry = { startTime: string; endTime: string; subject: string; className: string };
+    const dayMap = new Map<string, PeriodEntry[]>();
+
+    for (const tt of allTimetables) {
+      const className = (tt.class as any)?.name ?? "Unknown";
+      for (const day of tt.schedule) {
+        for (const period of (day as any).periods) {
+          const tId = period.teacher?._id?.toString() ?? period.teacher?.toString() ?? "";
+          if (tId !== teacherId) continue;
+
+          if (!dayMap.has(day.day)) dayMap.set(day.day, []);
+          dayMap.get(day.day)!.push({
+            startTime: period.startTime ?? "",
+            endTime: period.endTime ?? "",
+            subject: (period.subject as any)?.name ?? "—",
+            className,
+          });
+        }
+      }
+    }
+
+    const toMin = (t: string) => { const [h, m] = t.split(":").map(Number); return (h || 0) * 60 + (m || 0); };
+    const schedule = Array.from(dayMap.entries()).map(([day, periods]) => ({
+      day,
+      periods: periods.sort((a, b) => toMin(a.startTime) - toMin(b.startTime)),
+    }));
+
+    res.json({ schedule });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Get Timetable by Class
 // @route   GET /api/timetables/:classId
 export const getTimetable = async (req: Request, res: Response) => {

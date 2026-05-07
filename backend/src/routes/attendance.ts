@@ -1,6 +1,6 @@
 import express from "express";
 import { protect, authorize } from "../middleware/auth.ts";
-import { markAttendance, getClassAttendance, getClassAttendanceHistory, getMyAttendance } from "../controllers/attendance.ts";
+import { markAttendance, getClassAttendance, getClassAttendanceHistory, getMyAttendance, getChildAttendance } from "../controllers/attendance.ts";
 
 const attendanceRouter = express.Router();
 
@@ -8,5 +8,6 @@ attendanceRouter.post("/mark", protect, authorize(["admin", "teacher"]), markAtt
 attendanceRouter.get("/class/:classId", protect, authorize(["admin", "teacher"]), getClassAttendance);
 attendanceRouter.get("/class/:classId/history", protect, authorize(["admin", "teacher"]), getClassAttendanceHistory);
 attendanceRouter.get("/me", protect, getMyAttendance);
+attendanceRouter.get("/child/:id", protect, authorize(["parent"]), getChildAttendance);
 
 export default attendanceRouter;

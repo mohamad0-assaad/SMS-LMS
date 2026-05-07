@@ -23,4 +23,7 @@ const assignmentSchema = new Schema(
   { timestamps: true }
 );
 
+assignmentSchema.index({ class: 1, isActive: 1 });
+assignmentSchema.index({ teacher: 1 });
+
 export default mongoose.model<IAssignment>("Assignment", assignmentSchema);

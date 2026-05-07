@@ -65,7 +65,7 @@ export function FeesPage() {
     setLoading(true)
     const params = new URLSearchParams()
     if (statusFilter !== 'all') params.set('status', statusFilter)
-    getJson<{ fees: Fee[] }>(`/api/fees?${params}`)
+    getJson<{ fees: Fee[] }>(`/api/fees?${params}`, 30_000)
       .then((d) => setFees(d.fees ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))

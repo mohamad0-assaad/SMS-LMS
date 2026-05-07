@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Banknote, GraduationCap, Users } from 'lucide-react'
 import { getJson } from '../lib/api'
+import { SkeletonCard } from '../components/ui/Skeleton'
 
 type Child = { _id: string; name: string; email: string; studentClass?: { _id: string; name: string } | null }
 type Fee = { _id: string; amount: number; paidAmount: number; balance: number; status: string; dueDate: string; description?: string }
@@ -11,32 +12,123 @@ function statusBadge(status: string) {
   return 'bg-rose-500/10 text-rose-400 border-rose-500/20'
 }
 
+function ChildFees({ child }: { child: Child }) {
+  const [fees, setFees] = useState<Fee[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let c = false
+    setLoading(true)
+    getJson<{ fees: Fee[] }>(`/api/fees?student=${child._id}`)
+      .then((d) => { if (!c) setFees(d.fees ?? []) })
+      .catch(() => { if (!c) setFees([]) })
+      .finally(() => { if (!c) setLoading(false) })
+    return () => { c = true }
+  }, [child._id])
+
+  const totalOwed = fees.reduce((s, f) => s + f.balance, 0)
+  const totalPaid = fees.reduce((s, f) => s + f.paidAmount, 0)
+  const unpaidCount = fees.filter((f) => f.status !== 'paid').length
+
+  return (
+    <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
+      {/* Child header */}
+      <div className="flex items-center gap-3 border-b border-white/[0.06] px-5 py-4">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-600 to-emerald-500 text-sm font-bold text-white shadow-lg">
+          {child.name.slice(0, 1).toUpperCase()}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-white truncate">{child.name}</p>
+          <p className="text-xs text-slate-500 truncate">{child.email}</p>
+        </div>
+        {child.studentClass && (
+          <span className="shrink-0 flex items-center gap-1 rounded-full border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-xs font-medium text-green-400">
+            <GraduationCap className="h-3 w-3" />
+            {child.studentClass.name}
+          </span>
+        )}
+      </div>
+
+      {/* Fee summary */}
+      {loading ? (
+        <div className="px-5 py-4 animate-pulse">
+          <div className="grid grid-cols-3 gap-3">
+            {[1, 2, 3].map((i) => <div key={i} className="h-14 rounded-xl bg-white/[0.04]" />)}
+          </div>
+        </div>
+      ) : (
+        <div className="px-5 py-4 space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-slate-500 mb-1">Paid</p>
+              <p className="text-base font-bold text-emerald-400">${totalPaid.toLocaleString()}</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-slate-500 mb-1">Balance</p>
+              <p className={`text-base font-bold ${totalOwed > 0 ? 'text-rose-400' : 'text-slate-400'}`}>${totalOwed.toLocaleString()}</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-slate-500 mb-1">Unpaid</p>
+              <p className={`text-base font-bold ${unpaidCount > 0 ? 'text-amber-400' : 'text-slate-400'}`}>{unpaidCount}</p>
+            </div>
+          </div>
+
+          {fees.length > 0 && (
+            <div className="overflow-hidden rounded-xl border border-white/[0.06]">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-white/[0.06] text-left text-[10px] uppercase tracking-wider text-slate-600">
+                    <th className="px-4 py-2">Description</th>
+                    <th className="px-4 py-2">Due</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2 text-right">Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fees.map((f) => (
+                    <tr key={f._id} className="border-b border-white/[0.04] last:border-b-0">
+                      <td className="px-4 py-2 text-slate-300">{f.description || '—'}</td>
+                      <td className="px-4 py-2 text-slate-500">{new Date(f.dueDate).toLocaleDateString()}</td>
+                      <td className="px-4 py-2">
+                        <span className={`rounded-lg border px-1.5 py-0.5 text-[10px] font-semibold capitalize ${statusBadge(f.status)}`}>{f.status}</span>
+                      </td>
+                      <td className="px-4 py-2 text-right font-semibold text-rose-400">${f.balance}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {fees.length === 0 && (
+            <p className="text-xs text-slate-600 text-center py-2">No fee records.</p>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function ParentDashboard() {
   const [children, setChildren] = useState<Child[]>([])
-  const [activeIdx, setActiveIdx] = useState(0)
-  const [fees, setFees] = useState<Fee[]>([])
-  const [loadingChildren, setLoadingChildren] = useState(true)
-  const [loadingFees, setLoadingFees] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     getJson<{ children: Child[] }>('/api/users/my-children')
       .then((d) => setChildren(d.children ?? []))
       .catch(() => {})
-      .finally(() => setLoadingChildren(false))
+      .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => {
-    const child = children[activeIdx]
-    if (!child) { setFees([]); return }
-    setLoadingFees(true)
-    getJson<{ fees: Fee[] }>(`/api/fees?student=${child._id}`)
-      .then((d) => setFees(d.fees ?? []))
-      .catch(() => setFees([]))
-      .finally(() => setLoadingFees(false))
-  }, [children, activeIdx])
-
-  if (loadingChildren) {
-    return <p className="text-sm text-slate-500">Loading…</p>
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-4">
+        <div className="animate-pulse h-7 w-48 rounded-lg bg-white/[0.06]" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <SkeletonCard /><SkeletonCard />
+        </div>
+      </div>
+    )
   }
 
   if (!children.length) {
@@ -49,98 +141,33 @@ export function ParentDashboard() {
     )
   }
 
-  const active = children[activeIdx]
-  const totalOwed = fees.reduce((s, f) => s + f.balance, 0)
-  const totalPaid = fees.reduce((s, f) => s + f.paidAmount, 0)
-  const unpaidCount = fees.filter((f) => f.status !== 'paid').length
-
   return (
     <div className="mx-auto max-w-4xl space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-white">Dashboard</h1>
+          <p className="text-sm text-slate-500">
+            {children.length} {children.length === 1 ? 'child' : 'children'} linked to your account
+          </p>
+        </div>
+        <span className="flex items-center gap-1.5 rounded-full border border-green-700/30 bg-green-900/20 px-3 py-1.5 text-xs font-semibold text-green-400">
+          <Users className="h-3.5 w-3.5" />
+          {children.length}
+        </span>
+      </div>
 
-      {/* Child tabs */}
-      <div className="flex flex-wrap gap-2">
-        {children.map((c, i) => (
-          <button key={c._id} type="button" onClick={() => setActiveIdx(i)}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-              i === activeIdx
-                ? 'bg-green-700 text-white shadow-md shadow-green-700/25'
-                : 'bg-white/[0.06] text-slate-400 ring-1 ring-white/[0.08] hover:bg-white/[0.10] hover:text-white'
-            }`}>
-            {c.name}
-          </button>
+      {/* All children — one card each */}
+      <div className={`grid gap-5 ${children.length > 1 ? 'lg:grid-cols-2' : ''}`}>
+        {children.map((child) => (
+          <ChildFees key={child._id} child={child} />
         ))}
       </div>
 
-      {/* Child info */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] px-5 py-4 flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-400 text-lg font-bold">
-          {active.name.slice(0, 1).toUpperCase()}
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-white">{active.name}</p>
-          <p className="text-xs text-slate-500">{active.email}</p>
-          {active.studentClass && (
-            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-400 border border-green-500/20">
-              <GraduationCap className="h-3 w-3" /> {active.studentClass.name}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Fee summary cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-4">
-          <p className="text-xs text-slate-500">Total Paid</p>
-          <p className="mt-1 text-2xl font-bold text-emerald-400">${totalPaid.toLocaleString()}</p>
-        </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-4">
-          <p className="text-xs text-slate-500">Outstanding Balance</p>
-          <p className="mt-1 text-2xl font-bold text-rose-400">${totalOwed.toLocaleString()}</p>
-        </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-4">
-          <p className="text-xs text-slate-500">Unpaid Fees</p>
-          <p className="mt-1 text-2xl font-bold text-amber-400">{unpaidCount}</p>
-        </div>
-      </div>
-
-      {/* Fee records */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] overflow-hidden">
-        <div className="flex items-center gap-2 px-5 py-4 border-b border-white/[0.06]">
-          <Banknote className="h-4 w-4 text-green-400" />
-          <h2 className="text-sm font-semibold text-white">Fee Records</h2>
-        </div>
-        {loadingFees ? (
-          <p className="px-5 py-6 text-sm text-slate-500">Loading…</p>
-        ) : !fees.length ? (
-          <p className="px-5 py-6 text-sm text-slate-500">No fee records for {active.name}.</p>
-        ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/[0.06] text-left text-xs text-slate-500">
-                <th className="px-5 py-3">Description</th>
-                <th className="px-5 py-3">Amount</th>
-                <th className="px-5 py-3">Paid</th>
-                <th className="px-5 py-3">Balance</th>
-                <th className="px-5 py-3">Due</th>
-                <th className="px-5 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fees.map((f) => (
-                <tr key={f._id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
-                  <td className="px-5 py-3 text-slate-300">{f.description || '—'}</td>
-                  <td className="px-5 py-3 text-slate-200">${f.amount}</td>
-                  <td className="px-5 py-3 text-emerald-400">${f.paidAmount}</td>
-                  <td className="px-5 py-3 text-rose-400">${f.balance}</td>
-                  <td className="px-5 py-3 text-slate-500">{new Date(f.dueDate).toLocaleDateString()}</td>
-                  <td className="px-5 py-3">
-                    <span className={`rounded-lg border px-2 py-0.5 text-xs font-medium capitalize ${statusBadge(f.status)}`}>{f.status}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      {/* Finance overview footer */}
+      <div className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-xs text-slate-500">
+        <Banknote className="h-4 w-4 shrink-0 text-slate-600" />
+        Use the sidebar links to view attendance, timetable, and exam results for each child.
       </div>
     </div>
   )
