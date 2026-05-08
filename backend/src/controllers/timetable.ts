@@ -34,18 +34,37 @@ export const generateTimetable = async (req: Request, res: Response) => {
     // Find teachers whose subject list overlaps with this class
     const classSubjectIds = classData.subjects.map((s: any) => s._id.toString());
     const allTeachers = await User.find({ role: "teacher" });
+    const subjectTeacherIds = new Set(
+      classData.subjects.flatMap((s: any) =>
+        Array.isArray(s.teacher) ? s.teacher.map((t: any) => t.toString()) : []
+      )
+    );
+
     const qualifiedTeachers = allTeachers
-      .filter((t) => t.teacherSubject?.some((sid) => classSubjectIds.includes(sid.toString())))
+      .filter((t) => {
+        const teacherId = t._id.toString();
+        const hasSubjectMatch = t.teacherSubject?.some((sid) => classSubjectIds.includes(sid.toString()));
+        const isAssignedToSubject = subjectTeacherIds.has(teacherId);
+        return Boolean(hasSubjectMatch || isAssignedToSubject);
+      })
       .map((t) => ({ id: t._id, name: t.name, subjects: t.teacherSubject }));
 
     const subjectsPayload = classData.subjects.map((s: any) => ({
       id: s._id,
       name: s.name,
       code: s.code,
+      teachers: Array.isArray(s.teacher) ? s.teacher.map((t: any) => t.toString()) : [],
     }));
 
-    if (!subjectsPayload.length || !qualifiedTeachers.length) {
-      res.status(400).json({ message: "No subjects or qualified teachers found for this class" });
+    const missing: string[] = [];
+    if (!subjectsPayload.length) missing.push("this class has no subjects assigned");
+    if (!qualifiedTeachers.length) missing.push("no teachers are qualified for the assigned subjects");
+    if (missing.length) {
+      res.status(400).json({
+        message: `Cannot generate timetable because ${missing.join(" and ")}.`,
+        subjectsCount: subjectsPayload.length,
+        qualifiedTeacherCount: qualifiedTeachers.length,
+      });
       return;
     }
 

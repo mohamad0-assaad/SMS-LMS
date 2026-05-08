@@ -39,13 +39,21 @@ export const generateTimeTable = inngest.createFunction(
       const classSubjectsIds = classData.subjects.map((sub) =>
         sub._id.toString()
       );
+      const subjectTeacherIds = new Set(
+        classData.subjects.flatMap((sub: any) =>
+          Array.isArray(sub.teacher) ? sub.teacher.map((t: any) => t.toString()) : []
+        )
+      );
 
       const qualifiedTeachers = allTeacher
         .filter((teacher) => {
-          if (!teacher.teacherSubject) return false;
-          return teacher.teacherSubject.some((subId) =>
+          if (!teacher.teacherSubject && subjectTeacherIds.size === 0) return false;
+          const teacherId = teacher._id.toString();
+          const hasSubjectMatch = teacher.teacherSubject?.some((subId) =>
             classSubjectsIds.includes(subId.toString())
           );
+          const isAssignedToSubject = subjectTeacherIds.has(teacherId);
+          return Boolean(hasSubjectMatch || isAssignedToSubject);
         })
         .map((tea) => ({
           id: tea._id,
@@ -57,12 +65,15 @@ export const generateTimeTable = inngest.createFunction(
         id: sub._id,
         name: sub.name,
         code: sub.code,
+        teachers: Array.isArray(sub.teacher)
+          ? sub.teacher.map((t: any) => t.toString())
+          : [],
       }));
 
       // here we should check if we have teachers and subjects
       if (subjectsPayload.length === 0 || qualifiedTeachers.length === 0)
         throw new NonRetriableError(
-          "No Subjects or Teachers assigned to these class"
+          `No Subjects or Teachers assigned to this class. Subjects: ${subjectsPayload.length}, Qualified Teachers: ${qualifiedTeachers.length}`
         );
 
       return {

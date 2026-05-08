@@ -66,7 +66,7 @@ export function AdminTimetablePage() {
       })
       const data = (await res.json().catch(() => ({}))) as { message?: string }
       if (!res.ok) throw new Error(data.message ?? `Failed (${res.status})`)
-      setMsg(data.message ?? 'Timetable generated successfully.')
+      setMsg(`✓ ${data.message ?? 'Timetable generated successfully.'} Next: go to Classes, click Manage on this class, add students, and save.`)
     } catch (e: unknown) {
       setErr(e instanceof Error ? e.message : 'Request failed')
     } finally {
