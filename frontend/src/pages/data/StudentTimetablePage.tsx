@@ -181,8 +181,15 @@ export function StudentTimetablePage() {
 
       {/* No class warning */}
       {noClass && (
-        <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-3 text-sm text-amber-400">
-          No class is assigned on your profile yet. Ask an admin to assign you to a class.
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-4 space-y-2">
+          <p className="text-sm font-semibold text-amber-400">No class assigned to your account</p>
+          <p className="text-xs text-amber-300">To view your timetable, an administrator needs to:</p>
+          <ol className="text-xs text-amber-300 list-decimal list-inside space-y-1 mt-1.5">
+            <li>Go to <span className="font-mono bg-black/30 px-1 rounded">Classes</span> in their admin dashboard</li>
+            <li>Click the <span className="font-mono bg-black/30 px-1 rounded">Manage</span> button on your class</li>
+            <li>Add you to the <span className="font-mono bg-black/30 px-1 rounded">Students</span> section</li>
+            <li>Click <span className="font-mono bg-black/30 px-1 rounded">Save Changes</span></li>
+          </ol>
         </div>
       )}
 

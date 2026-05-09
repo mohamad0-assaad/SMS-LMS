@@ -178,9 +178,13 @@ function ManageClassModal({
 }) {
   const [teachers, setTeachers] = useState<TeacherRow[]>([])
   const [allStudents, setAllStudents] = useState<StudentRow[]>([])
+  const [allSubjects, setAllSubjects] = useState<{ _id: string; name: string; code: string }[]>([])
   const [selectedTeacher, setSelectedTeacher] = useState(teacherId(cls.classTeacher))
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(
     new Set((cls.students ?? []).map(String))
+  )
+  const [selectedSubjects, setSelectedSubjects] = useState<Set<string>>(
+    new Set((cls.subjects ?? []).map(String))
   )
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -190,9 +194,11 @@ function ManageClassModal({
     Promise.all([
       getJson<{ users: TeacherRow[] }>('/api/users?role=teacher&limit=200'),
       getJson<{ users: StudentRow[] }>('/api/users?role=student&limit=500'),
-    ]).then(([td, sd]) => {
+      getJson<{ subjects?: { _id: string; name: string; code: string }[] }>('/api/subjects?page=1&limit=200'),
+    ]).then(([td, sd, sb]) => {
       setTeachers(td.users ?? [])
       setAllStudents(sd.users ?? [])
+      setAllSubjects(sb.subjects ?? [])
     }).catch(() => {})
 
     function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
@@ -208,21 +214,42 @@ function ManageClassModal({
     })
   }
 
+  function toggleSubject(id: string) {
+    setSelectedSubjects((prev) => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
   async function save() {
     setSaving(true); setErr(null)
     try {
-      // Update class teacher if changed
+      // Update class teacher and subjects if changed
       const currentTeacherId = teacherId(cls.classTeacher)
+      const updatePayload: any = {}
+      
       if (selectedTeacher !== currentTeacherId) {
+        updatePayload.classTeacher = selectedTeacher || null
+      }
+      
+      const currentSubjects = (cls.subjects ?? []).map(String)
+      const newSubjects = [...selectedSubjects]
+      if (JSON.stringify(currentSubjects.sort()) !== JSON.stringify(newSubjects.sort())) {
+        updatePayload.subjects = newSubjects
+      }
+      
+      if (Object.keys(updatePayload).length > 0) {
         const res = await apiFetch(`/api/classes/update/${cls._id}`, {
           method: 'PATCH',
-          body: JSON.stringify({ classTeacher: selectedTeacher || null }),
+          body: JSON.stringify(updatePayload),
         })
         if (!res.ok) {
           const d = await res.json().catch(() => ({}))
-          throw new Error(d.message || 'Failed to update teacher')
+          throw new Error(d.message || 'Failed to update class')
         }
       }
+      
       // Update students
       const res2 = await apiFetch(`/api/classes/${cls._id}/students`, {
         method: 'PUT',
@@ -281,6 +308,34 @@ function ManageClassModal({
             </select>
           </div>
 
+          {/* Subjects */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-300 mb-1.5">
+              Subjects <span className="text-green-400">({selectedSubjects.size} selected)</span>
+            </label>
+            <div className="max-h-44 overflow-y-auto rounded-xl border border-white/[0.07] bg-[#0a0a0a] divide-y divide-white/[0.04]">
+              {allSubjects.length === 0 ? (
+                <p className="px-4 py-3 text-sm text-slate-500">No subjects available.</p>
+              ) : allSubjects.map((s) => (
+                <label key={s._id} className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={selectedSubjects.has(s._id)}
+                    onChange={() => toggleSubject(s._id)}
+                    className="h-4 w-4 rounded accent-green-500 shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-slate-200 truncate">{s.name}</p>
+                    <p className="text-xs text-slate-500 truncate">{s.code}</p>
+                  </div>
+                  {selectedSubjects.has(s._id) && (
+                    <span className="shrink-0 rounded-full border border-green-700/20 bg-green-900/30 px-2 py-0.5 text-[10px] text-green-400">✓</span>
+                  )}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Students */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -295,7 +350,7 @@ function ManageClassModal({
               onChange={(e) => setSearch(e.target.value)}
               className="mb-2 w-full rounded-xl border border-white/[0.08] bg-[#0a0a0a] px-3 py-2 text-sm text-white placeholder-slate-600 outline-none focus:border-green-500/50"
             />
-            <div className="max-h-56 overflow-y-auto rounded-xl border border-white/[0.07] bg-[#0a0a0a] divide-y divide-white/[0.04]">
+            <div className="max-h-40 overflow-y-auto rounded-xl border border-white/[0.07] bg-[#0a0a0a] divide-y divide-white/[0.04]">
               {filteredStudents.length === 0 ? (
                 <p className="px-4 py-3 text-sm text-slate-500">No students found.</p>
               ) : filteredStudents.map((s) => (

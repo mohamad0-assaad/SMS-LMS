@@ -386,84 +386,163 @@ export const getMyChildren = async (req: AuthRequest, res: Response) => {
 // @desc    Get a student's aggregated performance metrics (for teacher/admin)
 // @route   GET /api/users/:id/performance
 // @access  Private (teacher, admin)
+async function buildStudentPerformance(studentId: string) {
+  if (!mongoose.isValidObjectId(studentId)) throw new Error("Invalid student id");
+
+  const subs = await Submission.find({ student: studentId })
+    .populate({ path: "exam", select: "questions class subject", populate: { path: "subject", select: "name" } })
+    .lean();
+
+  const subjectMap = new Map<string, { name: string; scores: number[] }>();
+  let examScoreSum = 0;
+  let examScoreCount = 0;
+
+  for (const sub of subs) {
+    const ex = sub.exam as { questions?: { points?: number }[]; subject?: { _id?: unknown; name?: string } | string } | null;
+    const maxScore = Array.isArray(ex?.questions)
+      ? ex!.questions.reduce((s, q) => s + (q.points ?? 1), 0)
+      : 0;
+    if (maxScore <= 0) continue;
+
+    const pct = Math.round((sub.score / maxScore) * 100);
+    examScoreSum += pct;
+    examScoreCount++;
+
+    const subj = ex?.subject;
+    if (subj && typeof subj === "object" && "name" in subj) {
+      const subjDoc = subj as { _id?: unknown; name?: string };
+      const key = String(subjDoc._id ?? subjDoc.name ?? "unknown");
+      const name = subjDoc.name ?? "Unknown";
+      if (!subjectMap.has(key)) subjectMap.set(key, { name, scores: [] });
+      subjectMap.get(key)!.scores.push(pct);
+    }
+  }
+
+  const examScore = examScoreCount > 0 ? Math.round(examScoreSum / examScoreCount) : null;
+
+  const subjectScores = [...subjectMap.values()].map(({ name, scores }) => ({
+    subject: name,
+    avgScore: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
+    attempts: scores.length,
+  })).sort((a, b) => a.avgScore - b.avgScore);
+
+  const weakestSubject = subjectScores.length > 0 ? subjectScores[0] : null;
+
+  const attendanceRecords = await Attendance.find({ student: studentId }).lean();
+  const totalAtt = attendanceRecords.length;
+  const presentAtt = attendanceRecords.filter((r) => r.status === "present" || r.status === "late").length;
+  const attendanceRate = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : null;
+
+  let courseProgress: number | null = null;
+  const student = await User.findById(studentId).lean();
+  if (student && (student as any).studentClass) {
+    const totalExams = await Exam.countDocuments({
+      class: (student as any).studentClass,
+      isActive: true,
+    });
+    if (totalExams > 0) {
+      courseProgress = Math.round(Math.min((subs.length / totalExams) * 100, 100));
+    }
+  }
+
+  return {
+    examScore,
+    attendanceRate,
+    quizAttempts: subs.length,
+    courseProgress,
+    subjectScores,
+    weakestSubject: weakestSubject ? weakestSubject.subject : null,
+    hasData: subs.length > 0 || attendanceRecords.length > 0,
+  };
+}
+
+async function skillupBaseUrl(): Promise<string> {
+  return (process.env.SKILLUP_AI_URL ?? "http://127.0.0.1:8000").replace(/\/$/, "");
+}
+
+async function fetchSkillupPrediction(performance: {
+  examScore: number | null;
+  attendanceRate: number | null;
+  quizAttempts: number;
+  courseProgress: number | null;
+}) {
+  const url = `${await skillupBaseUrl()}/predict`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      exam_score: performance.examScore ?? 0,
+      quiz_score: performance.examScore ?? 0,
+      assignment_score: performance.examScore ?? 0,
+      attendance_rate: performance.attendanceRate ?? 0,
+      quiz_attempts: performance.quizAttempts,
+      study_time_hours: 8,
+      login_frequency: 10,
+      course_progress: performance.courseProgress ?? 0,
+      topic_variables: 0,
+      topic_loops: 0,
+      topic_functions: 0,
+      topic_oop: 0,
+      topic_recursion: 0,
+      topic_datastructures: 0,
+    }),
+  });
+
+  const text = await response.text();
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { raw: text };
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      typeof data === "object" && data !== null && "detail" in data
+        ? String((data as { detail?: unknown }).detail)
+        : `SkillUp AI returned ${response.status}`,
+    );
+  }
+
+  return data as Record<string, unknown>;
+}
+
+export const getMyPerformance = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?._id?.toString();
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    if (req.user?.role !== "student") return res.status(403).json({ message: "Only students can access this endpoint" });
+
+    const performance = await buildStudentPerformance(userId);
+    res.json(performance);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+export const getMyPrediction = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?._id?.toString();
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    if (req.user?.role !== "student") return res.status(403).json({ message: "Only students can access this endpoint" });
+
+    const performance = await buildStudentPerformance(userId);
+    const prediction = performance.hasData ? await fetchSkillupPrediction(performance) : null;
+    res.json({ performance, prediction });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Server Error";
+    res.status(500).json({ message, error });
+  }
+};
+
 export const getStudentPerformance = async (req: AuthRequest, res: Response) => {
   try {
-    const studentId = req.params.id;
-    if (!mongoose.isValidObjectId(studentId))
+    const studentId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    if (!studentId || !mongoose.isValidObjectId(studentId)) {
       return res.status(400).json({ message: "Invalid student id" });
-
-    // Submissions → per-subject scores
-    const subs = await Submission.find({ student: studentId })
-      .populate({ path: "exam", select: "questions class subject", populate: { path: "subject", select: "name" } })
-      .lean();
-
-    // Build per-subject score map
-    const subjectMap = new Map<string, { name: string; scores: number[] }>();
-    let examScoreSum = 0;
-    let examScoreCount = 0;
-
-    for (const sub of subs) {
-      const ex = sub.exam as { questions?: { points?: number }[]; subject?: { _id?: unknown; name?: string } | string } | null;
-      const maxScore = Array.isArray(ex?.questions)
-        ? ex!.questions.reduce((s, q) => s + (q.points ?? 1), 0)
-        : 0;
-      if (maxScore <= 0) continue;
-
-      const pct = Math.round((sub.score / maxScore) * 100);
-      examScoreSum += pct;
-      examScoreCount++;
-
-      // Track per-subject
-      const subj = ex?.subject;
-      if (subj && typeof subj === "object" && (subj as { _id?: unknown }).name !== undefined) {
-        const subjDoc = subj as { _id?: unknown; name?: string };
-        const key = String(subjDoc._id ?? subjDoc.name ?? "unknown");
-        const name = subjDoc.name ?? "Unknown";
-        if (!subjectMap.has(key)) subjectMap.set(key, { name, scores: [] });
-        subjectMap.get(key)!.scores.push(pct);
-      }
     }
-
-    const examScore = examScoreCount > 0 ? Math.round(examScoreSum / examScoreCount) : null;
-
-    // Aggregate per-subject averages
-    const subjectScores = [...subjectMap.values()].map(({ name, scores }) => ({
-      subject: name,
-      avgScore: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
-      attempts: scores.length,
-    })).sort((a, b) => a.avgScore - b.avgScore); // weakest first
-
-    // Weakest subject = best recommendation
-    const weakestSubject = subjectScores.length > 0 ? subjectScores[0] : null;
-
-    // Attendance → rate
-    const attendanceRecords = await Attendance.find({ student: studentId }).lean();
-    const totalAtt = attendanceRecords.length;
-    const presentAtt = attendanceRecords.filter((r) => r.status === "present" || r.status === "late").length;
-    const attendanceRate = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : null;
-
-    // Course progress = how many of the class's active exams the student submitted
-    let courseProgress: number | null = null;
-    const student = await User.findById(studentId).lean();
-    if (student && (student as any).studentClass) {
-      const totalExams = await Exam.countDocuments({
-        class: (student as any).studentClass,
-        isActive: true,
-      });
-      if (totalExams > 0) {
-        courseProgress = Math.round(Math.min((subs.length / totalExams) * 100, 100));
-      }
-    }
-
-    return res.json({
-      examScore,           // 0–100 overall average %, null if no submissions
-      attendanceRate,      // 0–100 %, null if no records
-      quizAttempts: subs.length,
-      courseProgress,      // 0–100 %, null if unknown
-      subjectScores,       // [{ subject, avgScore, attempts }] weakest first
-      weakestSubject: weakestSubject ? weakestSubject.subject : null,
-      hasData: subs.length > 0 || attendanceRecords.length > 0,
-    });
+    const performance = await buildStudentPerformance(studentId);
+    res.json(performance);
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });
   }

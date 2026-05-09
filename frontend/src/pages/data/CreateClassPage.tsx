@@ -7,6 +7,8 @@ type YearRow = { _id: string; name: string }
 type YearsRes = { years?: YearRow[] }
 type UserRow = { _id: string; name: string; role: string }
 type UsersRes = { users: UserRow[] }
+type SubjectRow = { _id: string; name: string; code: string }
+type SubjectsRes = { subjects?: SubjectRow[] }
 
 export function CreateClassPage() {
   const { role } = useParams()
@@ -15,8 +17,10 @@ export function CreateClassPage() {
   const [capacity, setCapacity] = useState(30)
   const [academicYearId, setAcademicYearId] = useState('')
   const [classTeacherId, setClassTeacherId] = useState('')
+  const [selectedSubjects, setSelectedSubjects] = useState<Set<string>>(new Set())
   const [years, setYears] = useState<YearRow[]>([])
   const [teachers, setTeachers] = useState<UserRow[]>([])
+  const [subjects, setSubjects] = useState<SubjectRow[]>([])
   const [loadErr, setLoadErr] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
@@ -27,17 +31,27 @@ export function CreateClassPage() {
     Promise.all([
       getJson<YearsRes>('/api/academic-years?page=1&limit=100'),
       getJson<UsersRes>('/api/users?page=1&limit=100&role=teacher'),
+      getJson<SubjectsRes>('/api/subjects?page=1&limit=200'),
     ])
-      .then(([y, u]) => {
+      .then(([y, u, s]) => {
         if (c) return
         const yList = y.years ?? []
         setYears(yList)
         if (yList[0]) setAcademicYearId(yList[0]!._id)
         setTeachers((u.users ?? []).filter((x) => x.role === 'teacher'))
+        setSubjects(s.subjects ?? [])
       })
       .catch((e: Error) => { if (!c) setLoadErr(e.message) })
     return () => { c = true }
   }, [])
+
+  function toggleSubject(id: string) {
+    setSelectedSubjects((prev) => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
 
   async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault()
@@ -47,12 +61,19 @@ export function CreateClassPage() {
     try {
       const res = await apiFetch('/api/classes/create', {
         method: 'POST',
-        body: JSON.stringify({ name: name.trim(), academicYear: academicYearId, capacity, ...(classTeacherId ? { classTeacher: classTeacherId } : {}) }),
+        body: JSON.stringify({
+          name: name.trim(),
+          academicYear: academicYearId,
+          capacity,
+          subjects: [...selectedSubjects],
+          ...(classTeacherId ? { classTeacher: classTeacherId } : {})
+        }),
       })
       const data = (await res.json().catch(() => ({}))) as { message?: string }
       if (!res.ok) throw new Error(data.message ?? `Failed (${res.status})`)
       setMsg('Class created.')
       setName('')
+      setSelectedSubjects(new Set())
     } catch (e: unknown) {
       setErr(e instanceof Error ? e.message : 'Failed')
     } finally {
@@ -95,6 +116,35 @@ export function CreateClassPage() {
             <option value="">— None —</option>
             {teachers.map((t) => <option key={t._id} value={t._id}>{t.name}</option>)}
           </select>
+        </div>
+        <div>
+          <label className={labelCls}>Subjects (optional)</label>
+          <div className="max-h-48 overflow-y-auto rounded-xl border border-white/[0.08] bg-white/[0.03] divide-y divide-white/[0.04]">
+            {subjects.length === 0 ? (
+              <p className="px-4 py-3 text-sm text-slate-500">No subjects available.</p>
+            ) : (
+              subjects.map((s) => (
+                <label key={s._id} className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-white/[0.05] transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={selectedSubjects.has(s._id)}
+                    onChange={() => toggleSubject(s._id)}
+                    className="h-4 w-4 rounded accent-green-500 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white truncate">{s.name}</p>
+                    <p className="text-xs text-slate-500 truncate">{s.code}</p>
+                  </div>
+                  {selectedSubjects.has(s._id) && (
+                    <span className="shrink-0 rounded-full border border-green-700/20 bg-green-900/30 px-2 py-0.5 text-[10px] text-green-400">✓</span>
+                  )}
+                </label>
+              ))
+            )}
+          </div>
+          {selectedSubjects.size > 0 && (
+            <p className="mt-2 text-xs text-green-400">{selectedSubjects.size} subject{selectedSubjects.size !== 1 ? 's' : ''} selected</p>
+          )}
         </div>
         <button type="submit" disabled={submitting || !years.length}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-2.5 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50">

@@ -14,6 +14,9 @@ print("MAIN LOADED")
 
 def _failure_probability(model, basic_arr: np.ndarray) -> float:
     """Return a 0–1 probability instead of a binary 0/1 class label."""
+    basic_arr = np.nan_to_num(np.asarray(basic_arr, dtype=float), nan=0.0, posinf=0.0, neginf=0.0)
+    if basic_arr.ndim == 1:
+        basic_arr = basic_arr.reshape(1, -1)
     if hasattr(model, "predict_proba"):
         return round(float(model.predict_proba(basic_arr)[0][1]), 2)
     if hasattr(model, "decision_function"):
@@ -43,8 +46,13 @@ def _study_strategy_from_score(exam_score: float) -> str:
 
 
 def predict_student(basic, full):
-    basic_arr = np.array([basic])
-    full_arr = np.array([full])
+    basic_arr = np.nan_to_num(np.asarray([basic], dtype=float), nan=0.0, posinf=0.0, neginf=0.0)
+    full_arr = np.nan_to_num(np.asarray([full], dtype=float), nan=0.0, posinf=0.0, neginf=0.0)
+
+    if basic_arr.ndim == 1:
+        basic_arr = basic_arr.reshape(1, -1)
+    if full_arr.ndim == 1:
+        full_arr = full_arr.reshape(1, -1)
 
     # Failure risk as a real probability (e.g. 0.34 = 34 %)
     failure_risk = _failure_probability(failure_model, basic_arr)
@@ -57,7 +65,7 @@ def predict_student(basic, full):
     # Study strategy derived from the actual exam score (basic[0]) because
     # all topic-mastery inputs are zero, which makes the ML strategy model
     # output the same label for every student regardless of performance.
-    exam_score = float(basic[0])
+    exam_score = float(basic_arr[0][0])
     study_strategy = _study_strategy_from_score(exam_score)
 
     return {
