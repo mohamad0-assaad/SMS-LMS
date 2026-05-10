@@ -126,7 +126,12 @@ STRICT RULES:
 // @access  Private/Teacher
 export const getTeacherSchedule = async (req: Request, res: Response) => {
   try {
-    const teacherId = String((req as any).user._id);
+    // Admin can pass ?teacherId=... to view any teacher's schedule
+    const reqUser = (req as any).user;
+    const teacherId =
+      reqUser.role === "admin" && req.query.teacherId
+        ? String(req.query.teacherId)
+        : String(reqUser._id);
 
     const allTimetables = await Timetable.find({})
       .populate("class", "name")

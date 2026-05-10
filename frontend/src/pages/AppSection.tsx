@@ -28,6 +28,7 @@ import { TeacherExamDetailPage } from './data/TeacherExamDetailPage'
 import { TeacherExamsPage } from './data/TeacherExamsPage'
 import { TeacherResourcesPage } from './data/TeacherResourcesPage'
 import { TeacherResultsPage } from './data/TeacherResultsPage'
+import { TeacherTimetablePage } from './data/TeacherTimetablePage'
 import { UsersListPage } from './data/UsersListPage'
 import { ParentDashboard } from './ParentDashboard'
 import { SectionPlaceholder } from './SectionPlaceholder'
@@ -86,6 +87,8 @@ export function AppSection() {
     if (a === 'students' && b && c === 'skill') return <StudentSkillInsightPage />
     if (a === 'students') return <UsersListPage title="Students" filterRole="student" />
     if (a === 'classes') return <ClassesListPage />
+    if (a === 'subjects') return <SubjectsListPage />
+    if (a === 'timetable') return <TeacherTimetablePage />
     if (a === 'exams' && b) return <TeacherExamDetailPage />
     if (a === 'exams') return <TeacherExamsPage />
     if (a === 'results') return <TeacherResultsPage />
