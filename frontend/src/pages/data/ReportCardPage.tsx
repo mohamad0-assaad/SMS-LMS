@@ -34,7 +34,7 @@ export function ReportCardPage() {
           const cls = d.classes ?? []
           setClasses(cls)
           if (cls[0]) setSelectedClass(cls[0]._id)
-        })
+        }).catch(() => {})
       }
     })
     getJson<ReportCard[]>('/api/report-cards', 30_000)

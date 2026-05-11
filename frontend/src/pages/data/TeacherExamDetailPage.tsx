@@ -1,12 +1,20 @@
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { apiFetch } from '../../lib/api'
+import { apiFetch, getJson } from '../../lib/api'
 
 type ExamDetail = {
   _id: string; title: string; duration?: number; dueDate?: string; isActive?: boolean
   questions?: Array<{ questionText: string; type?: string; options?: string[]; points?: number }>
   subject?: { name?: string }; class?: { name?: string }
+}
+
+type Submission = {
+  _id: string
+  student?: { _id: string; name: string; email: string }
+  score?: number
+  totalPoints?: number
+  submittedAt?: string
 }
 
 export function TeacherExamDetailPage() {
@@ -15,6 +23,7 @@ export function TeacherExamDetailPage() {
   const base = `/app/${role ?? 'teacher'}`
   const examId = pathname.match(/\/(exams)\/([a-fA-F0-9]{24})\/?$/)?.[2] ?? pathname.split('/').filter(Boolean).pop() ?? ''
   const [exam, setExam] = useState<ExamDetail | null>(null)
+  const [submissions, setSubmissions] = useState<Submission[]>([])
   const [err, setErr] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -22,13 +31,20 @@ export function TeacherExamDetailPage() {
     if (!examId) return
     let c = false
     setLoading(true)
-    apiFetch(`/api/exams/${examId}`)
-      .then(async (res) => {
-        const data = await res.json().catch(() => ({}))
-        if (!res.ok) throw new Error((data as { message?: string }).message ?? 'Failed')
-        return data as ExamDetail
+    Promise.all([
+      apiFetch(`/api/exams/${examId}`)
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}))
+          if (!res.ok) throw new Error((data as { message?: string }).message ?? 'Failed')
+          return data as ExamDetail
+        }),
+      getJson<{ submissions: Submission[] }>(`/api/exams/${examId}/submissions`)
+        .then((d) => d.submissions ?? [])
+        .catch(() => []),
+    ])
+      .then(([examData, subs]) => {
+        if (!c) { setExam(examData); setSubmissions(subs) }
       })
-      .then((d) => { if (!c) setExam(d) })
       .catch((e: Error) => { if (!c) setErr(e.message) })
       .finally(() => { if (!c) setLoading(false) })
     return () => { c = true }
@@ -73,6 +89,54 @@ export function TeacherExamDetailPage() {
             </p>
           </div>
 
+          {/* Student Results */}
+          <div className="space-y-3">
+            <h2 className="text-sm font-semibold text-slate-300">
+              Student Results
+              <span className="ml-2 rounded-full bg-white/[0.06] px-2 py-0.5 text-xs text-slate-400">{submissions.length}</span>
+            </h2>
+            {!submissions.length ? (
+              <p className="rounded-xl border border-white/[0.06] bg-[#111111] px-4 py-6 text-center text-sm text-slate-500">
+                No submissions yet.
+              </p>
+            ) : (
+              <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#111111]">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/[0.06] text-left text-xs text-slate-500">
+                      <th className="px-4 py-3">Student</th>
+                      <th className="px-4 py-3">Score</th>
+                      <th className="px-4 py-3">Submitted</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/[0.04]">
+                    {submissions.map((s) => {
+                      const pct = s.totalPoints ? Math.round(((s.score ?? 0) / s.totalPoints) * 100) : null
+                      return (
+                        <tr key={s._id} className="hover:bg-white/[0.02]">
+                          <td className="px-4 py-3">
+                            <p className="font-medium text-white">{s.student?.name ?? '—'}</p>
+                            <p className="text-xs text-slate-500">{s.student?.email ?? ''}</p>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`font-semibold ${pct !== null && pct >= 50 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                              {s.score ?? 0} / {s.totalPoints ?? '?'}
+                            </span>
+                            {pct !== null && <span className="ml-1.5 text-xs text-slate-500">({pct}%)</span>}
+                          </td>
+                          <td className="px-4 py-3 text-slate-500 text-xs">
+                            {s.submittedAt ? new Date(s.submittedAt).toLocaleString() : '—'}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Questions */}
           <div className="space-y-3">
             <h2 className="text-sm font-semibold text-slate-300">Questions</h2>
             {!exam.questions?.length ? (

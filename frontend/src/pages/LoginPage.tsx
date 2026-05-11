@@ -128,9 +128,6 @@ export function LoginPage() {
               </button>
             </form>
 
-            <p className="mt-4 text-center text-xs text-slate-600">
-              Connects to <code className="rounded bg-white/[0.06] px-1.5 py-0.5 text-slate-400">POST /api/users/login</code>
-            </p>
 
             {/* Demo section */}
             <details className="mt-5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">

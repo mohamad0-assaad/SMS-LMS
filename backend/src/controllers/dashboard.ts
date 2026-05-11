@@ -95,6 +95,6 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
     res.json(stats);
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };

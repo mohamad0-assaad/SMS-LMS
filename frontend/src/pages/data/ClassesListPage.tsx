@@ -29,7 +29,6 @@ type StudentRow = {
   isActive?: boolean
 }
 
-type TeacherRow = { _id: string; name: string; email?: string }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -176,10 +175,8 @@ function ManageClassModal({
   onClose: () => void
   onSaved: () => void
 }) {
-  const [teachers, setTeachers] = useState<TeacherRow[]>([])
   const [allStudents, setAllStudents] = useState<StudentRow[]>([])
   const [allSubjects, setAllSubjects] = useState<{ _id: string; name: string; code: string }[]>([])
-  const [selectedTeacher, setSelectedTeacher] = useState(teacherId(cls.classTeacher))
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(
     new Set((cls.students ?? []).map(String))
   )
@@ -192,11 +189,9 @@ function ManageClassModal({
 
   useEffect(() => {
     Promise.all([
-      getJson<{ users: TeacherRow[] }>('/api/users?role=teacher&limit=200'),
       getJson<{ users: StudentRow[] }>('/api/users?role=student&limit=500'),
       getJson<{ subjects?: { _id: string; name: string; code: string }[] }>('/api/subjects?page=1&limit=200'),
-    ]).then(([td, sd, sb]) => {
-      setTeachers(td.users ?? [])
+    ]).then(([sd, sb]) => {
       setAllStudents(sd.users ?? [])
       setAllSubjects(sb.subjects ?? [])
     }).catch(() => {})
@@ -225,14 +220,7 @@ function ManageClassModal({
   async function save() {
     setSaving(true); setErr(null)
     try {
-      // Update class teacher and subjects if changed
-      const currentTeacherId = teacherId(cls.classTeacher)
       const updatePayload: any = {}
-      
-      if (selectedTeacher !== currentTeacherId) {
-        updatePayload.classTeacher = selectedTeacher || null
-      }
-      
       const currentSubjects = (cls.subjects ?? []).map(String)
       const newSubjects = [...selectedSubjects]
       if (JSON.stringify(currentSubjects.sort()) !== JSON.stringify(newSubjects.sort())) {
@@ -292,21 +280,6 @@ function ManageClassModal({
           {err && (
             <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">{err}</div>
           )}
-
-          {/* Class Teacher */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-1.5">Class Teacher</label>
-            <select
-              value={selectedTeacher}
-              onChange={(e) => setSelectedTeacher(e.target.value)}
-              className="w-full rounded-xl border border-white/[0.08] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-green-500/50"
-            >
-              <option value="">— No teacher assigned —</option>
-              {teachers.map((t) => (
-                <option key={t._id} value={t._id}>{t.name}</option>
-              ))}
-            </select>
-          </div>
 
           {/* Subjects */}
           <div>

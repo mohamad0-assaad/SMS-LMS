@@ -28,6 +28,6 @@ export const getAllActivities = async (
       total: count,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };

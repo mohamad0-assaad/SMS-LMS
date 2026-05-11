@@ -36,7 +36,7 @@ export function MaterialsPage() {
     getProfile().then((p) => {
       setRole(p?.role ?? null)
       if (p && p.role !== 'student') {
-        getJson<any>('/api/classes').then((d) => setClasses(d.classes ?? []))
+        getJson<any>('/api/classes').then((d) => setClasses(d.classes ?? [])).catch(() => {})
       }
     })
     load()

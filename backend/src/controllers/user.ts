@@ -107,7 +107,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -153,7 +153,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       isActive: user.isActive,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -217,7 +217,7 @@ export const updateUser = async (req: Request, res: Response) => {
       message: "User updated successfully",
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -276,7 +276,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -302,7 +302,7 @@ export const deleteUser = async (req: Request, res: Response) => {
       res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -338,7 +338,7 @@ export const getUserProfile = async (req: AuthRequest, res: Response) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server error" });
   }
 };
 
@@ -364,7 +364,7 @@ export const setParentChildren = async (req: AuthRequest, res: Response) => {
     await logActivity({ userId: req.user!._id.toString(), action: `Updated children for parent ${parent.name}` });
     res.json({ message: "Children updated", children: (populated as any)?.children ?? [] });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -379,7 +379,7 @@ export const getMyChildren = async (req: AuthRequest, res: Response) => {
 
     res.json({ children: (parent as any)?.children ?? [] });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -559,6 +559,6 @@ export const logoutUser = async (_req: Request, res: Response) => {
     });
     res.json({ message: "Logged out successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };

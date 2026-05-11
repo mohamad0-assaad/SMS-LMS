@@ -77,7 +77,6 @@ export function RegisterUserPage() {
       </Link>
       <div>
         <h1 className="text-lg font-semibold text-white">Add user</h1>
-        <p className="mt-1 text-sm text-slate-500">Creates an account via POST /api/users/register</p>
       </div>
       {classesErr && (
         <p className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">

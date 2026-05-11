@@ -417,6 +417,26 @@ export const getExamResult = async (req: Request, res: Response) => {
   }
 };
 
+// @desc    Get all student submissions for an exam (teacher/admin view)
+// @route   GET /api/exams/:id/submissions
+export const getExamSubmissions = async (req: Request, res: Response) => {
+  try {
+    const exam = await Exam.findById(req.params.id).select("questions");
+    const totalPoints = exam
+      ? (exam.questions as any[]).reduce((sum: number, q: any) => sum + (q.points ?? 1), 0)
+      : null;
+
+    const submissions = await Submission.find({ exam: req.params.id })
+      .populate("student", "name email")
+      .sort({ submittedAt: -1 })
+      .lean();
+
+    res.json({ submissions: submissions.map((s) => ({ ...s, totalPoints })) });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Delete an exam (and its submissions)
 // @route   DELETE /api/exams/:id
 // @access  Private (Teacher owns it, or Admin)

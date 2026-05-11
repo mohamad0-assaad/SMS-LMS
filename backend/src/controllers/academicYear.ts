@@ -39,7 +39,7 @@ export const createAcademicYear = async (
     });
     res.status(201).json(academicYear);
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -77,7 +77,7 @@ export const getAllAcademicYears = async (
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -97,7 +97,7 @@ export const getCurrentAcademicYear = async (
       res.status(200).json(currentYear);
     }
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -140,7 +140,7 @@ export const updateAcademicYear = async (
     });
     res.status(200).json(updatedYear);
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -174,6 +174,6 @@ export const deleteAcademicYear = async (
     });
     res.status(200).json({ message: "Academic Year deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };

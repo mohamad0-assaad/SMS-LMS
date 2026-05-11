@@ -89,7 +89,6 @@ export function CreateClassPage() {
       <Link to={`${base}/classes`} className="text-sm font-medium text-green-400 hover:underline">← Back to classes</Link>
       <div>
         <h1 className="text-lg font-semibold text-white">Create class</h1>
-        <p className="mt-1 text-sm text-slate-500">POST /api/classes/create</p>
       </div>
       {loadErr && <p className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">{loadErr}</p>}
       <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-lg">
