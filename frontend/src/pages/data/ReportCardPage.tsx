@@ -3,7 +3,7 @@ import { getJson, getProfile, postJson } from '../../lib/api'
 import { FileText, Sparkles } from 'lucide-react'
 import { SkeletonTable } from '../../components/ui/Skeleton'
 
-type SubjectResult = { subjectName: string; score: number; grade: string; remarks: string }
+type SubjectResult = { subjectName: string; score: number | null; grade: string; remarks: string }
 type ReportCard = { _id: string; term: string; averageScore: number; attendance: number; teacherComment: string; results: SubjectResult[]; generatedAt: string; student?: { name: string } }
 type ClassOption = { _id: string; name: string }
 
@@ -11,6 +11,7 @@ function gradeBadge(grade: string) {
   if (grade === 'A+' || grade === 'A') return 'text-emerald-400'
   if (grade === 'B') return 'text-green-400'
   if (grade === 'C') return 'text-amber-400'
+  if (grade === 'N/A') return 'text-slate-500'
   return 'text-rose-400'
 }
 
@@ -107,7 +108,7 @@ export function ReportCardPage() {
                         {r.results.map((s, i) => (
                           <tr key={i} className="border-b border-white/[0.04]">
                             <td className="px-4 py-2 text-slate-200">{s.subjectName}</td>
-                            <td className="px-4 py-2 text-slate-300">{s.score}%</td>
+                            <td className="px-4 py-2 text-slate-300">{s.score != null ? `${s.score}%` : '—'}</td>
                             <td className={`px-4 py-2 font-bold ${gradeBadge(s.grade)}`}>{s.grade}</td>
                             <td className="px-4 py-2 text-slate-500">{s.remarks}</td>
                           </tr>

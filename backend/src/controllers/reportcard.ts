@@ -63,13 +63,17 @@ export const triggerReportGeneration = async (req: AuthRequest, res: Response) =
 
       const results = subjects.map((subject: any) => {
         const scores = subjectScores[subject.name] ?? [];
-        const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+        if (!scores.length) {
+          return { subjectName: subject.name, score: null, grade: "N/A", remarks: "No exam taken" };
+        }
+        const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
         const grade = scoreToGrade(avg);
         return { subjectName: subject.name, score: avg, grade, remarks: gradeRemarks(grade) };
       });
 
-      const totalScore = results.reduce((s, r) => s + r.score, 0);
-      const averageScore = results.length ? Math.round(totalScore / results.length) : 0;
+      const attempted = results.filter((r) => r.score !== null);
+      const totalScore = attempted.reduce((s, r) => s + (r.score as number), 0);
+      const averageScore = attempted.length ? Math.round(totalScore / attempted.length) : 0;
 
       await ReportCard.findOneAndUpdate(
         { student: student._id, term },

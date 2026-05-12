@@ -44,11 +44,16 @@ export const getAllClasses = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const search = req.query.search as string;
+    const reqUser = (req as any).user;
 
     // 2. Build Search Query (Case-insensitive regex on Name)
     const query: any = {};
     if (search) {
       query.name = { $regex: search, $options: "i" };
+    }
+    // Teachers only see classes where they are the assigned class teacher
+    if (reqUser?.role === "teacher") {
+      query.classTeacher = reqUser._id;
     }
     // 3. Execute Query (Count & Find)
     const [total, classes] = await Promise.all([

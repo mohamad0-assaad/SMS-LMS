@@ -31,6 +31,9 @@ import { TeacherResultsPage } from './data/TeacherResultsPage'
 import { TeacherTimetablePage } from './data/TeacherTimetablePage'
 import { UsersListPage } from './data/UsersListPage'
 import { ParentDashboard } from './ParentDashboard'
+import { ParentChildDataPage } from './data/ParentChildDataPage'
+import { ParentMessagesPage } from './data/ParentMessagesPage'
+import { TeacherMessagesPage } from './data/TeacherMessagesPage'
 import { SectionPlaceholder } from './SectionPlaceholder'
 
 function segments(role: string, pathname: string): string[] {
@@ -72,6 +75,7 @@ export function AppSection() {
     if (a === 'report-cards') return <ReportCardPage />
     if (a === 'ai-insights') return <AiClassInsightsPage />
     if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
+    if (a === 'messages') return <TeacherMessagesPage />
     if (a === 'exams' && b) return <TeacherExamDetailPage />
     if (a === 'exams') {
       return (
@@ -101,6 +105,7 @@ export function AppSection() {
     if (a === 'ai' && b === 'exam') return <TeacherAiExamPage />
     if (a === 'ai-insights') return <AiClassInsightsPage />
     if (a === 'ai' && b === 'insights') return <AiClassInsightsPage />
+    if (a === 'messages') return <TeacherMessagesPage />
   }
 
   if (role === 'student') {
@@ -120,10 +125,10 @@ export function AppSection() {
   if (role === 'parent') {
     if (a === 'children') return <ParentDashboard />
     if (a === 'attendance') return <AttendancePage />
-    if (a === 'timetable') return <SectionPlaceholder />
-    if (a === 'exams-results') return <SectionPlaceholder />
-    if (a === 'ai') return <SectionPlaceholder />
-    if (a === 'messages') return <SectionPlaceholder />
+    if (a === 'timetable') return <ParentChildDataPage defaultTab="timetable" />
+    if (a === 'exams-results') return <ParentChildDataPage defaultTab="results" />
+    if (a === 'ai') return <StudentAiCoachPage />
+    if (a === 'messages') return <ParentMessagesPage />
   }
 
   return <SectionPlaceholder />

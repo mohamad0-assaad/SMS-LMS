@@ -5,6 +5,7 @@ import Class from "../models/class.ts";
 import User from "../models/user.ts";
 import { generateText } from "ai";
 import { getGeminiModel } from "../config/geminiModel.ts";
+import mongoose from "mongoose";
 
 // @desc    Generate a Timetable using AI (synchronous)
 // @route   POST /api/timetables/generate
@@ -107,9 +108,19 @@ STRICT RULES:
     const cleanJSON = text.replace(/```json/g, "").replace(/```/g, "").trim();
     const aiSchedule = JSON.parse(cleanJSON) as { schedule: any[] };
 
+    // Cast subject/teacher string IDs to ObjectId so .populate() works correctly
+    const schedule = aiSchedule.schedule.map((day: any) => ({
+      ...day,
+      periods: (day.periods ?? []).map((p: any) => ({
+        ...p,
+        subject: p.subject ? new mongoose.Types.ObjectId(String(p.subject)) : undefined,
+        teacher: p.teacher ? new mongoose.Types.ObjectId(String(p.teacher)) : undefined,
+      })),
+    }));
+
     // Replace any existing timetable for this class+year
     await Timetable.findOneAndDelete({ class: classId, academicYear: academicYearId });
-    await Timetable.create({ class: classId, academicYear: academicYearId, schedule: aiSchedule.schedule });
+    await Timetable.create({ class: classId, academicYear: academicYearId, schedule });
 
     const userId = (req as any).user._id;
     await logActivity({ userId, action: `Generated timetable for class ID: ${classId}` });
