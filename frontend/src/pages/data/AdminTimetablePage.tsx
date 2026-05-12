@@ -351,7 +351,6 @@ function GenerateTab({ classes, years }: { classes: ClassRow[]; years: YearRow[]
       className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-lg max-w-lg"
     >
       <p className="text-xs text-slate-500">
-        Triggers <code className="rounded bg-white/[0.06] px-1">POST /api/timetables/generate</code>.
         The class needs subjects and matching teachers configured first.
       </p>
 

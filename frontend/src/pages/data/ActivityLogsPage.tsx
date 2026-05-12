@@ -45,9 +45,6 @@ export function ActivityLogsPage() {
     <div className="mx-auto max-w-5xl space-y-4">
       <div>
         <h1 className="text-lg font-semibold text-white">Activity logs</h1>
-        <p className="text-sm text-slate-500">
-          Live data from <code className="rounded bg-white/[0.06] px-1 text-slate-300">GET /api/activities</code>
-        </p>
       </div>
 
       {loading ? (

@@ -27,7 +27,7 @@ export const createSubject = async (req: Request, res: Response) => {
       res.status(201).json(newSubject);
     }
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -70,7 +70,7 @@ export const getAllSubjects = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -102,7 +102,7 @@ export const updateSubject = async (req: Request, res: Response) => {
 
     res.json(updatedSubject);
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };
 
@@ -122,6 +122,6 @@ export const deleteSubject = async (req: Request, res: Response) => {
     });
     res.json({ message: "Subject deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: (error as any)?.message || "Server Error" });
   }
 };

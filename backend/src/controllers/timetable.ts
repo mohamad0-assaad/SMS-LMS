@@ -116,7 +116,7 @@ STRICT RULES:
 
     res.status(200).json({ message: "Timetable generated successfully" });
   } catch (error: any) {
-    res.status(500).json({ message: error?.message ?? "Server Error", error });
+    res.status(500).json({ message: error?.message ?? "Server Error" });
   }
 };
 

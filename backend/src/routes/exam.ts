@@ -8,6 +8,7 @@ import {
   getExamById,
   toggleExamStatus,
   getExamResult,
+  getExamSubmissions,
   deleteExam,
 } from "../controllers/exam.ts";
 import { protect, authorize } from "../middleware/auth.ts";
@@ -65,6 +66,13 @@ examRouter.get(
   protect,
   authorize(["student", "admin", "teacher"]),
   getExamResult
+);
+
+examRouter.get(
+  "/:id/submissions",
+  protect,
+  authorize(["teacher", "admin"]),
+  getExamSubmissions
 );
 
 examRouter.get(
